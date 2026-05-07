@@ -129,6 +129,7 @@ export default function Dashboard() {
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Empresa</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">URL</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Fecha</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Modelo IA</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Resumen</th>
@@ -141,11 +142,11 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan={9} className="text-center py-8 text-gray-500">Cargando...</td></tr>
+                <tr><td colSpan={10} className="text-center py-8 text-gray-500">Cargando...</td></tr>
               )}
               {!loading && items.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="text-center py-12">
+                  <td colSpan={10} className="text-center py-12">
                     <div className="flex flex-col items-center">
                       <Briefcase className="w-12 h-12 text-gray-300 dark:text-gray-600 mb-3" />
                       <p className="text-gray-500 dark:text-gray-400">No hay postulaciones registradas</p>
@@ -156,6 +157,13 @@ export default function Dashboard() {
               {items.map((item) => (
                 <tr key={item.id} className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30">
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{item.empresa}</td>
+                  <td className="px-4 py-3 text-gray-500 max-w-[150px] truncate">
+                    {item.urlOferta ? (
+                      <a href={item.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline truncate">{item.urlOferta}</a>
+                    ) : (
+                      <span className="text-gray-400 text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{item.fecha}</td>
                   <td className="px-4 py-3 text-gray-500">
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-xs">{item.modeloIA}</span>

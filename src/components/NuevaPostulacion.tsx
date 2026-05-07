@@ -88,10 +88,11 @@ export default function NuevaPostulacion() {
       await savePostulacion({
         empresa: urlOferta ? portal : perfilKey,
         portal,
+        urlOferta,
         fecha: new Date().toISOString().split('T')[0],
         modeloIA: `${iaEngine} / ${iaModel}`,
-        resumenOferta: '',
-        cartaIntencion: '',
+        resumenOferta: data.resumenOferta || '',
+        cartaIntencion: data.cartaIntencion || '',
         cvData: data,
         estado: 'Pendiente',
         notas: '',

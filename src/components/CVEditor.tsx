@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { CVMasterData, IdiomaItem } from '@/types/cv';
-import { Save, ArrowLeft, Plus, Trash2, User, Briefcase, GraduationCap, MessageSquare, Languages, Wrench } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, User, Briefcase, GraduationCap, MessageSquare, Languages, Wrench, FileText, ClipboardList } from 'lucide-react';
 
 interface Props {
   cvData: CVMasterData;
@@ -64,6 +64,8 @@ export default function CVEditor({ cvData, onGuardar, onVolver, saving = false, 
     { id: 'skills', label: 'Tecnologías', icon: Wrench },
     { id: 'softskills', label: 'Soft Skills', icon: Wrench },
     { id: 'idiomas', label: 'Idiomas', icon: Languages },
+    { id: 'resumen', label: 'Resumen Oferta', icon: ClipboardList },
+    { id: 'carta', label: 'Carta Intención', icon: FileText },
   ];
 
   return (
@@ -238,6 +240,32 @@ export default function CVEditor({ cvData, onGuardar, onVolver, saving = false, 
                   </>
                 );
               })()}
+            </div>
+          )}
+
+          {activeTab === 'resumen' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Resumen de la Oferta</label>
+              <textarea
+                value={data.resumenOferta || ''}
+                onChange={(e) => setData((prev) => ({ ...prev, resumenOferta: e.target.value }))}
+                placeholder="2-3 frases resumiendo la oferta..."
+                rows={4}
+                className="form-textarea w-full resize-y"
+              />
+            </div>
+          )}
+
+          {activeTab === 'carta' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Carta de Intención</label>
+              <textarea
+                value={data.cartaIntencion || ''}
+                onChange={(e) => setData((prev) => ({ ...prev, cartaIntencion: e.target.value }))}
+                placeholder="Carta de presentación adaptada a la oferta (máx 60 palabras)..."
+                rows={6}
+                className="form-textarea w-full resize-y"
+              />
             </div>
           )}
         </div>

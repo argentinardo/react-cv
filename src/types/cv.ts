@@ -35,6 +35,7 @@ export interface Postulacion {
   id?: string;
   empresa: string;
   portal: string;
+  urlOferta: string;
   fecha: string;
   modeloIA: string;
   resumenOferta: string;

@@ -3,98 +3,84 @@ import type { CVMasterData } from '@/types/cv';
 import { userData, profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
 import { inferPortal, detectLanguage } from '@/utils/helpers';
 
-function buildDefaultCV(profileKey: ProfileKey): CVMasterData {
-  const profile = profileMap[profileKey] || profileMap.desarrollador;
-  return {
-    header: { ...userData.header, titulacion: profileMeta[profileKey]?.label || '' },
-    foto: profileMeta[profileKey]?.foto || '',
-    sobreMi: profile.informacionPersonal,
-    tecnologias: profile.tecnologias.slice(0, 10),
-    softSkills: profile.softSkills.slice(0, 5),
-    idiomas: profile.idiomas,
-    experiencia: profile.experiencia.map((e) => ({
-      titulo: e.cargo,
-      duracion: e.periodo,
-      ocupacion: e.empresa,
-      empresas: [e.empresa],
-      tareas: e.tareas,
-    })),
-    formacion: profile.formacion,
-    cartaIntencion: '',
-    resumenOferta: '',
-  };
-}
-
 function buildPrompt(ofertaTexto: string, perfil: string, instrucciones: string): string {
   const idioma = detectLanguage(ofertaTexto);
   const profileKey = perfil as ProfileKey;
   const profile = profileMap[profileKey] || profileMap.desarrollador;
   const header = userData.header;
 
-  const expFormatted = profile.experiencia.map((e) =>
-    `- **${e.cargo}** en ${e.empresa} (${e.periodo})\n  Tareas: ${e.tareas.join('; ')}`
-  ).join('\n');
+  return `Eres un experto en redacción de CVs adaptados a ofertas laborales.
 
-  return `Eres un experto en redacción de CVs para perfiles técnicos.
+ANALIZA la oferta y genera un JSON con el CV adaptado.
 
-Tu tarea es analizar la oferta laboral y devolver SOLO un JSON válido con los campos EXACTOS que se indican abajo.
-
-REGLAS CRÍTICAS:
-1. NO inventes puestos, empresas, fechas ni experiencias. Usa EXACTAMENTE las del perfil base.
-2. NO inventes tecnologías que no estén en el pool del perfil.
-3. SÍ adapta: texto "sobreMi", énfasis en tareas de experiencia, tecnologías y soft skills priorizadas.
-4. Usa keywords de la oferta de forma natural.
-5. La "cartaIntencion" debe ser un string de máximo 60 palabras.
-6. El "resumenOferta" debe ser 2-3 frases.
-7. Devuelve SOLO JSON válido. Sin texto adicional, sin markdown.
-
-JSON REQUIRED (usa exactamente estos nombres de clave):
-{
-  "header": {
-    "nombre": "${header.nombre}",
-    "apellidos": "${header.apellidos}",
-    "titulacion": "<inferido de la oferta>",
-    "telefono": "${header.telefono}",
-    "direccion": "${header.direccion}",
-    "correo": "${header.correo}",
-    "web": "${header.web}"
-  },
-  "foto": "${profileMeta[profileKey]?.foto || ''}",
-  "sobreMi": "<adaptado a la oferta, 1-2 párrafos>",
-  "tecnologias": ["<máx 10, prioriza las de la oferta, usa EXACTAMENTE del pool abajo>"],
-  "softSkills": ["<máx 5, prioriza las de la oferta, usa del pool abajo>"],
-  "idiomas": [${profile.idiomas.map((item: { [idioma: string]: string[] }) => {
-    const lang = Object.keys(item)[0];
-    return `{ "${lang}": ${JSON.stringify(item[lang])} }`;
-  }).join(', ')}],
-  "experiencia": [${profile.experiencia.map((e) => `{ "titulo": "${e.cargo}", "duracion": "${e.periodo}", "ocupacion": "${e.empresa}", "empresas": ["${e.empresa}"], "tareas": ["<adaptadas levemente a la oferta>"] }`).join(', ')}],
-  "formacion": "${profile.formacion.replace(/\n/g, ' ')}",
-  "cartaIntencion": "<carta de presentación/intención de máximo 60 palabras, adaptada a la oferta>",
-  "resumenOferta": "<2-3 frases resumiendo la oferta>"
-}
+REGLAS:
+1. sobreMi → Reescribí el texto base del perfil para que encaje con la oferta. Máx 2 párrafos.
+2. tecnologias → Elegí máx 10 del pool del perfil. Las que menciona la oferta van primero.
+3. softSkills → Elegí máx 5 del pool del perfil. Las que coinciden con la oferta van primero.
+4. experiencia.tareas → Para CADA experiencia, adaptá las tareas para que resuenen con la oferta. NO cambiar titulo, duracion, ocupacion ni empresas.
+5. formacion e idiomas → Mantener igual a los datos base.
+6. header.titulacion → Inferí de la oferta. El resto del header usar los datos fijos.
+7. foto → Usar la foto del perfil base.
+8. cartaIntencion → Carta de máximo 60 palabras dirigida a la empresa, mostrando motivación y 2 puntos fuertes.
+9. resumenOferta → 2-3 frases resumiendo la oferta de trabajo.
+10. NO inventes puestos, empresas, fechas ni tecnologías que no estén en el perfil base.
+11. Devuelve SOLO JSON válido. Sin texto antes ni después, sin markdown.
 
 ---
+DATOS FIJOS DEL CANDIDATO:
+- Nombre: ${header.nombre} ${header.apellidos}
+- Teléfono: ${header.telefono}
+- Dirección: ${header.direccion}
+- Email: ${header.correo}
+- Web: ${header.web}
+- Foto: ${profileMeta[profileKey]?.foto || ''}
 
-PERFIL BASE: ${perfil}
-
-SOBRE MÍ BASE (ADAPTAR):
+SOBRE MÍ BASE (REESCRIBIR):
 ${profile.informacionPersonal}
 
-EXPERIENCIA REAL (ADAPTAR TAREAS LEVEMENTE, NO CAMBIAR PUESTOS/EMPRESAS/FECHAS):
-${expFormatted}
+EXPERIENCIA (ADAPTAR SOLO LAS TAREAS DE CADA UNA):
+Puesto: ${profile.experiencia.map((e) => e.cargo).join(' / ')}
+Detalle por puesto:
+${profile.experiencia.map((e) => `Puesto: ${e.cargo}
+Empresa: ${e.empresa}
+Duración: ${e.periodo}
+Tareas actuales: ${e.tareas.join('. ')}`).join('\n---\n')}
 
-POOL TECNOLOGÍAS (MÁX 10):
+POOL TECNOLOGÍAS (MÁX 10, priorizar las de la oferta):
 ${profile.tecnologias.join(', ')}
 
-POOL SOFT SKILLS (MÁX 5):
+POOL SOFT SKILLS (MÁX 5, priorizar las de la oferta):
 ${profile.softSkills.join(', ')}
 
+FORMACIÓN (USAR TAL CUAL):
+${profile.formacion}
+
+IDIOMAS (USAR TAL CUAL):
+${profile.idiomas.map((i: { [idioma: string]: string[] }) => {
+    const lang = Object.keys(i)[0];
+    return `${lang}: ${i[lang].join(' - ')}`;
+  }).join('\n')}
+
+---
 OFERTA (${idioma}):
 ${ofertaTexto}
 
-${instrucciones ? `INSTRUCCIONES ADICIONALES: ${instrucciones}` : ''}
+${instrucciones ? `EXTRA: ${instrucciones}` : ''}
 
-Devuelve SOLO el JSON con las claves exactas indicadas.`;
+---
+JSON DE SALIDA (generá el JSON completo):
+{
+  "header": { "nombre": "${header.nombre}", "apellidos": "${header.apellidos}", "titulacion": "...", "telefono": "${header.telefono}", "direccion": "${header.direccion}", "correo": "${header.correo}", "web": "${header.web}" },
+  "foto": "${profileMeta[profileKey]?.foto || ''}",
+  "sobreMi": "...",
+  "tecnologias": ["...", "..."],
+  "softSkills": ["...", "..."],
+  "idiomas": [${profile.idiomas.map((i: { [idioma: string]: string[] }) => JSON.stringify(i)).join(', ')}],
+  "experiencia": [${profile.experiencia.map((e) => `{"titulo":"${e.cargo}","duracion":"${e.periodo}","ocupacion":"${e.empresa}","empresas":["${e.empresa}"],"tareas":["..."]}`).join(', ')}],
+  "formacion": "${profile.formacion.replace(/"/g, '\\"')}",
+  "cartaIntencion": "...",
+  "resumenOferta": "..."
+}`;
 }
 
 async function callGemini(prompt: string, model: string): Promise<string> {
@@ -120,7 +106,7 @@ async function callOpenRouter(prompt: string, model: string): Promise<string> {
     body: JSON.stringify({
       model,
       messages: [
-        { role: 'system', content: 'Devuelve SOLO JSON válido con las claves exactas especificadas.' },
+        { role: 'system', content: 'Devuelve SOLO JSON válido. Sin texto antes ni después.' },
         { role: 'user', content: prompt },
       ],
     }),
@@ -161,7 +147,7 @@ async function callDeepSeek(prompt: string, model: string): Promise<string> {
     body: JSON.stringify({
       model,
       messages: [
-        { role: 'system', content: 'Devuelve SOLO JSON válido con las claves exactas especificadas.' },
+        { role: 'system', content: 'Devuelve SOLO JSON válido. Sin texto antes ni después.' },
         { role: 'user', content: prompt },
       ],
     }),
@@ -190,9 +176,17 @@ const KEY_MAP: Record<string, string> = {
   cartaIntención: 'cartaIntencion',
   cartaDePresentacion: 'cartaIntencion',
   carta: 'cartaIntencion',
+  cartaPresentacion: 'cartaIntencion',
+  coverLetter: 'cartaIntencion',
+  cover_letter: 'cartaIntencion',
   resumeOferta: 'resumenOferta',
   resumenOferta: 'resumenOferta',
+  resumen: 'resumenOferta',
   'resumen-oferta': 'resumenOferta',
+  'resumen_oferta': 'resumenOferta',
+  ofertaResumen: 'resumenOferta',
+  ofertaSummary: 'resumenOferta',
+  summary: 'resumenOferta',
   experiencia: 'experiencia',
   formacion: 'formacion',
   formación: 'formacion',
@@ -210,42 +204,80 @@ function normalizeKeys(obj: Record<string, unknown>): Record<string, unknown> {
   return normalized;
 }
 
+function buildDefaultCV(profileKey: ProfileKey): CVMasterData {
+  const profile = profileMap[profileKey] || profileMap.desarrollador;
+  return {
+    header: { ...userData.header, titulacion: profileMeta[profileKey]?.label || '' },
+    foto: profileMeta[profileKey]?.foto || '',
+    sobreMi: profile.informacionPersonal,
+    tecnologias: profile.tecnologias.slice(0, 10),
+    softSkills: profile.softSkills.slice(0, 5),
+    idiomas: profile.idiomas,
+    experiencia: profile.experiencia.map((e) => ({
+      titulo: e.cargo,
+      duracion: e.periodo,
+      ocupacion: e.empresa,
+      empresas: [e.empresa],
+      tareas: e.tareas,
+    })),
+    formacion: profile.formacion,
+    cartaIntencion: '',
+    resumenOferta: '',
+  };
+}
+
 function parseCVResponse(text: string, profileKey: ProfileKey): CVMasterData {
   const defaults = buildDefaultCV(profileKey);
 
   const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace === -1 || lastBrace === -1) {
+    console.warn('No JSON found in AI response:', text.substring(0, 200));
+    return defaults;
+  }
+  const jsonStr = cleaned.substring(firstBrace, lastBrace + 1);
+
   let parsed: Record<string, unknown>;
   try {
-    parsed = normalizeKeys(JSON.parse(cleaned));
-  } catch {
-    console.warn('JSON parse failed, returning defaults');
+    parsed = normalizeKeys(JSON.parse(jsonStr));
+  } catch (e) {
+    console.warn('JSON parse failed:', e, '\nRaw:', text.substring(0, 300));
     return defaults;
   }
 
   const header: CVMasterData['header'] = {
     ...defaults.header,
-    ...(parsed.header ? normalizeKeys(parsed.header as Record<string, unknown>) : {}),
+    ...(parsed.header ? normalizeKeys(parsed.header as Record<string, unknown>) as CVMasterData['header'] : {}),
   };
 
   const experienciaRaw = parsed.experiencia as Array<Record<string, unknown>> | undefined;
-  const experiencia = experienciaRaw?.map((e) => {
-    const ne = normalizeKeys(e);
-    return {
-      titulo: (ne.titulo as string) || '',
-      duracion: (ne.duracion as string) || '',
-      ocupacion: (ne.ocupacion as string) || '',
-      empresas: (ne.empresas as string[]) || [],
-      tareas: (ne.tareas as string[]) || [],
-    };
-  }) || defaults.experiencia;
+  const experiencia = (experienciaRaw && experienciaRaw.length > 0)
+    ? experienciaRaw.map((e) => {
+        const ne = normalizeKeys(e);
+        return {
+          titulo: (ne.titulo as string) || '',
+          duracion: (ne.duracion as string) || '',
+          ocupacion: (ne.ocupacion as string) || '',
+          empresas: (ne.empresas as string[]) || [],
+          tareas: (ne.tareas as string[]) || [],
+        };
+      })
+    : defaults.experiencia;
 
   return {
     header,
     foto: (parsed.foto as string) || defaults.foto,
     sobreMi: (parsed.sobreMi as string) || defaults.sobreMi,
-    tecnologias: Array.isArray(parsed.tecnologias) ? parsed.tecnologias as string[] : defaults.tecnologias,
-    softSkills: Array.isArray(parsed.softSkills) ? parsed.softSkills as string[] : defaults.softSkills,
-    idiomas: Array.isArray(parsed.idiomas) ? parsed.idiomas as CVMasterData['idiomas'] : defaults.idiomas,
+    tecnologias: (Array.isArray(parsed.tecnologias) && (parsed.tecnologias as string[]).length > 0)
+      ? parsed.tecnologias as string[]
+      : defaults.tecnologias,
+    softSkills: (Array.isArray(parsed.softSkills) && (parsed.softSkills as string[]).length > 0)
+      ? parsed.softSkills as string[]
+      : defaults.softSkills,
+    idiomas: (Array.isArray(parsed.idiomas) && (parsed.idiomas as unknown[]).length > 0)
+      ? parsed.idiomas as CVMasterData['idiomas']
+      : defaults.idiomas,
     experiencia,
     formacion: (parsed.formacion as string) || defaults.formacion,
     cartaIntencion: (parsed.cartaIntencion as string) || '',
