@@ -1,0 +1,124 @@
+PERFIL PROFESIONAL COMPLETO
+
+Eres un desarrollador frontend con una base técnica sólida y en evolución constante, especialmente enfocado en tecnologías modernas como React y TypeScript. Tu perfil combina tres cosas que no siempre se ven juntas: capacidad técnica, pensamiento estructurado y curiosidad intelectual.
+
+No eres solo alguien que implementa interfaces, sino alguien que intenta entender por qué se construyen de cierta manera, lo que te acerca más a un perfil de arquitecto frontend que a uno puramente ejecutor.
+
+Además, tienes una inclinación natural hacia la mejora continua: estás incorporando conceptos como arquitectura de software y nuevas tecnologías como inteligencia artificial aplicada, lo cual indica que no te conformas con lo básico ni con repetir tareas.
+
+EXPERIENCIA Y FORMA DE TRABAJAR
+
+Has trabajado construyendo componentes a partir de diseño (por ejemplo, integrando Figma con sistemas como PatternLab), lo que implica:
+
+Traducción precisa de diseño a código
+Trabajo con design systems o librerías de componentes
+Sensibilidad por la consistencia visual y reutilización
+
+Un punto clave de tu experiencia es que no solo ejecutas tareas, sino que detectas ineficiencias. Por ejemplo:
+
+Identificas cuellos de botella en flujos (como el paso de Figma a código)
+Propones mejoras en procesos
+Te enfocas en optimizar tiempos y calidad
+
+Esto es importante: tienes mentalidad de mejora de sistema, no solo de ejecución individual.
+
+
+Aquí hay algo importante: tienes una forma de pensar bastante analítica, influenciada por intereses en:
+
+Inteligencia artificial
+
+Esto no es relleno: impacta directamente en cómo trabajas. Probablemente:
+
+Tiendes a buscar modelos mentales claros
+Te gusta entender sistemas complejos
+Cuestionas decisiones en lugar de aceptarlas sin más
+Buscas eficiencia y elegancia en soluciones
+
+Mi opinión: esto es un activo muy potente, pero mal comunicado puede jugar en contra (parecer demasiado abstracto o técnico). Bien usado, te posiciona como alguien con potencial de crecimiento fuerte.
+
+COMPETENCIAS TRANSVERSALES
+Resolución de problemas
+Detectas fricciones en procesos
+Propones mejoras prácticas
+Te enfocas en eficiencia real, no teórica
+Aprendizaje autónomo
+Estás constantemente incorporando nuevas herramientas (IA, arquitectura, TypeScript)
+No dependes exclusivamente de formación formal
+Pensamiento crítico
+No ejecutas sin cuestionar
+Buscas entender el sistema completo
+Adaptabilidad
+Has estado en distintos contextos (proyectos, trabajo no técnico como heladería, etc.)
+Capacidad de moverte entre roles si hace falta
+
+DIRECCIÓN PROFESIONAL
+
+Tu perfil apunta claramente hacia algo más que “frontend básico”. Tienes potencial para evolucionar hacia:
+
+Frontend avanzado / senior
+Arquitectura frontend
+Desarrollo orientado a sistemas complejos
+Proyectos que integren IA (muy alineado con tu interés actual)
+Freelance técnico especializado (especialmente si combinas frontend + IA)
+
+RASGOS DIFERENCIALES (esto es oro para entrevistas)
+Pensamiento estructurado y analítico
+Curiosidad intelectual real (no de postureo)
+Capacidad de detectar problemas en procesos
+Interés por tecnologías emergentes (IA)
+Base técnica + intención de crecer hacia arquitectura
+
+Tengo carnet de conducir
+
+
+SOFT SKILLS (COMPETENCIAS PERSONALES)
+Pensamiento analítico y estructurado
+
+Tiendes a descomponer problemas complejos en partes más pequeñas y manejables. No te quedas en la superficie: buscas entender cómo y por qué funcionan las cosas. Esto te permite encontrar soluciones más eficientes y detectar errores que otros pueden pasar por alto.
+
+Valor profesional: reduces incertidumbre en proyectos y mejoras la calidad técnica de las decisiones.
+
+Orientación a la mejora continua
+
+No te limitas a cumplir tareas; cuestionas procesos y buscas optimizarlos. Cuando detectas ineficiencias (como flujos de trabajo lentos o repetitivos), tiendes a proponer mejoras prácticas.
+
+Valor profesional: aumentas productividad del equipo, no solo la tuya.
+
+Resolución de problemas
+
+Te enfrentas a bloqueos técnicos o de proceso con enfoque práctico. No te paralizas fácilmente: analizas, pruebas y ajustas hasta encontrar una solución viable.
+
+Valor profesional: eres útil en momentos de fricción real del proyecto, no solo en escenarios ideales.
+
+Aprendizaje autónomo
+
+Tienes una fuerte capacidad autodidacta. No esperas a que te enseñen todo, sino que investigas, pruebas y construyes conocimiento por tu cuenta, especialmente en áreas como arquitectura o inteligencia artificial.
+
+Valor profesional: reduces dependencia y evolucionas rápido en entornos cambiantes.
+
+Pensamiento crítico
+
+No aceptas decisiones técnicas o de producto sin analizarlas. Evalúas si tienen sentido, si escalan y si son coherentes con el sistema.
+
+Valor profesional: aportas criterio, no solo ejecución.
+
+Capacidad de adaptación
+
+Puedes moverte entre distintos contextos (técnicos o no técnicos) y seguir siendo funcional. Has demostrado flexibilidad en entornos diferentes y con distintos niveles de complejidad.
+
+Valor profesional: encajas bien en equipos y situaciones cambiantes.
+
+Comunicación en desarrollo (honesto y bien enfocado)
+
+
+En positivo: tienes profundidad técnica
+
+Valor profesional (si lo mejoras): puedes convertirte en alguien muy influyente dentro del equipo.
+
+Trabajo en equipo con criterio propio
+
+Colaboras bien, pero valoras que las decisiones tengan sentido. Te cuesta más cuando no compartes la dirección del proyecto o cuando no tienes capacidad de influir.
+
+En positivo: no eres pasivo ni conformista
+
+Valor profesional: aportas criterio, aunque necesitas equilibrarlo con alineación de equipo.

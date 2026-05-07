@@ -1,0 +1,36 @@
+[
+  {
+    "posició": "Mosso de magatzem",
+    "durada": "2 anys",
+    "empreses": [
+      "Cooperativa Agrícola Berabevú"
+    ],
+    "rol": "Gestió de magatzem, preparació de comandes i organització de mercaderies",
+    "tasques": [
+      "Recepció, organització i reposició de mercaderies",
+      "Preparació i embalatge de comandes",
+      "Control d’estoc i inventari bàsic",
+      "Manteniment de l’ordre i la neteja del magatzem",
+      "Compliment de normes de seguretat"
+    ]
+  },
+  {
+    "posició": "Atenció al públic i restauració",
+    "durada": "3 anys",
+    "empreses": [
+      "Cibercafè",
+      "Gelateria",
+      "Bar",
+      "Restaurant"
+    ],
+    "rol": "Atenció al client en entorns de restauració i serveis",
+    "tasques": [
+      "Atenció directa al client al taulell i a la sala",
+      "Prendre comandes i servir productes",
+      "Preparació bàsica d’aliments i begudes",
+      "Cobrament a caixa i gestió de pagaments",
+      "Resolució d’incidències i tracte cordial amb els clients",
+      "Manteniment de la neteja i ordre del local"
+    ]
+  }
+]

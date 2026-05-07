@@ -1,0 +1,57 @@
+[
+  {
+    "posició": "Desenvolupament Frontend",
+    "durada": "+10 anys",
+    "empreses": [
+      "Suntransfers",
+      "Beezy",
+      "Multiplica",
+      "Globant"
+    ],
+    "rol": "Escalabilitat, consistència i mantenibilitat de components UI",
+    "tasques": [
+      "Desenvolupament d’interfícies web amb HTML5, CSS3 i JavaScript",
+      "Arquitectura CSS escalable (BEMIT, ITCSS)",
+      "Creació de components reutilitzables",
+      "Organització de codi frontend en projectes grans",
+      "Optimització de rendiment i temps de càrrega",
+      "Integració amb APIs i serveis backend",
+      "Configuració d’entorns amb Webpack",
+      "Ús de React, TypeScript, Vue i Storybook"
+    ]
+  },
+  {
+    "posició": "Arquitecte CSS",
+    "durada": "+6 anys",
+    "empreses": [
+      "Beezy",
+      "Suntransfers"
+    ],
+    "rol": "Disseny i manteniment d’arquitectures CSS escalables i consistents",
+    "tasques": [
+      "Definició de sistemes de disseny i estructures CSS",
+      "Arquitectura CSS escalable (BEMIT, ITCSS)",
+      "Creació de layouts complexos i sistemes modulars",
+      "Desenvolupament de plantilles amb Handlebars i HTML",
+      "Maquetació d’emails responsive",
+      "Control de qualitat visual i coherència UI"
+    ]
+  },
+  {
+    "posició": "Automatització & fluxos IA",
+    "durada": "+2 anys",
+    "empreses": [
+      "Freelance"
+    ],
+    "rol": "Automatització de processos i optimització de l’eficiència operativa",
+    "tasques": [
+      "Automatització de processos amb n8n",
+      "Integració d’APIs (WhatsApp, Google Workspace, etc.)",
+      "Disseny de fluxos per reduir tasques manuals",
+      "Autoallotjament amb Docker",
+      "Integració de models LLM en entorns locals",
+      "Desenvolupament d’interfícies per automatitzacions",
+      "Manteniment i depuració en producció"
+    ]
+  }
+]

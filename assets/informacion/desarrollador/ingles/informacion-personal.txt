@@ -1,0 +1,140 @@
+COMPLETE PROFESSIONAL PROFILE
+
+You are a frontend developer with a solid technical foundation and continuous growth, especially focused on modern technologies such as React and TypeScript. Your profile combines three things not always seen together: technical ability, structured thinking, and intellectual curiosity.
+
+You are not only someone who implements interfaces, but someone who tries to understand why they are built a certain way, which brings you closer to a frontend architect profile than to a purely executional one.
+
+You also have a natural inclination toward continuous improvement: you are incorporating concepts such as software architecture, patterns (such as BFF), and new technologies such as applied artificial intelligence, which shows you do not settle for the basics or repetitive tasks.
+
+EXPERIENCE AND HOW YOU WORK
+
+You have worked building components from design (for example, integrating Figma with systems like PatternLab), which involves:
+
+Accurate translation of design to code
+Working with design systems or component libraries
+Sensitivity to visual consistency and reuse
+
+A key point in your experience is that you do not only execute tasks—you spot inefficiencies. For example:
+
+You identify bottlenecks in workflows (such as the Figma-to-code handoff)
+You propose process improvements
+You focus on optimizing time and quality
+
+This matters: you have a systems-improvement mindset, not only individual execution.
+
+TECHNICAL SKILLS
+Core frontend
+React (modern focus)
+TypeScript (deepening in progress)
+Advanced JavaScript
+HTML / CSS
+Growing advanced concepts
+Frontend architecture
+Patterns such as BFF (Backend for Frontend)
+API integration
+Performance optimization
+Tools
+Figma (interpretation and collaboration with design)
+Component systems / PatternLab or similar
+Modern development environments
+HOW YOU THINK (this sets you apart quite a bit)
+
+Something important here: you think in a fairly analytical way, influenced by interests in:
+
+Artificial intelligence
+
+This is not filler—it directly affects how you work. You probably:
+
+Tend to look for clear mental models
+Like understanding complex systems
+Question decisions rather than accept them blindly
+Seek efficiency and elegance in solutions
+
+My view: this is a very strong asset, but poorly communicated it can backfire (seeming too abstract or technical). Used well, it positions you as someone with strong growth potential.
+
+CROSS-CUTTING SKILLS
+Problem solving
+You spot friction in processes
+You propose practical improvements
+You focus on real efficiency, not theoretical
+Self-directed learning
+You constantly adopt new tools (AI, architecture, TypeScript)
+You do not rely solely on formal training
+Critical thinking
+You do not execute without questioning
+You seek to understand the whole system
+Adaptability
+You have been in different contexts (projects, non-technical work such as an ice cream shop, etc.)
+You can move between roles when needed
+
+CAREER DIRECTION
+
+Your profile clearly points beyond “basic frontend.” You have potential to grow toward:
+
+Advanced / senior frontend
+Frontend architecture
+Development focused on complex systems
+Projects that integrate AI (well aligned with your current interest)
+Specialized technical freelance work (especially if you combine frontend + AI)
+
+DIFFERENTIATORS (gold for interviews)
+Structured, analytical thinking
+Genuine intellectual curiosity (not for show)
+Ability to spot problems in processes
+Interest in emerging technologies (AI)
+Technical foundation + intent to grow toward architecture
+
+I hold a driving licence
+
+
+SOFT SKILLS (PERSONAL COMPETENCIES)
+Analytical, structured thinking
+
+You tend to break complex problems into smaller, manageable parts. You do not stay on the surface: you seek to understand how and why things work. This helps you find more efficient solutions and catch errors others may miss.
+
+Professional value: you reduce uncertainty in projects and improve the technical quality of decisions.
+
+Orientation to continuous improvement
+
+You do not only complete tasks; you question processes and seek to optimize them. When you spot inefficiencies (such as slow or repetitive workflows), you tend to propose practical improvements.
+
+Professional value: you raise team productivity, not only your own.
+
+Problem solving
+
+You tackle technical or process blockers with a practical mindset. You do not freeze easily: you analyze, test, and adjust until you find a viable solution.
+
+Professional value: you are useful when projects hit real friction, not only in ideal scenarios.
+
+Self-directed learning
+
+You have strong self-teaching ability. You do not wait to be taught everything; you research, experiment, and build knowledge on your own, especially in areas such as architecture or artificial intelligence.
+
+Professional value: you reduce dependency and evolve quickly in changing environments.
+
+Critical thinking
+
+You do not accept technical or product decisions without analyzing them. You assess whether they make sense, whether they scale, and whether they fit the system.
+
+Professional value: you bring judgment, not only execution.
+
+Adaptability
+
+You can move between different contexts (technical or non-technical) and remain effective. You have shown flexibility in different environments and levels of complexity.
+
+Professional value: you fit well in teams and changing situations.
+
+Communication in development (honest and well focused)
+
+
+On the plus side: you have technical depth
+
+Professional value (if you improve it): you can become highly influential within the team.
+
+Teamwork with your own judgment
+
+You collaborate well, but you want decisions to make sense. It is harder when you do not share the project direction or when you cannot influence it.
+
+On the plus side: you are neither passive nor complacent
+
+Professional value: you bring judgment, though you need to balance it with team alignment.

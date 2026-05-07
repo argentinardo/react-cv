@@ -1,0 +1,20 @@
+JavaScript
+TypeScript
+React
+Next.js
+HTML / CSS / SCSS / Tailwind
+Zustand / Redux Toolkit
+TanStack Query (React Query)
+Vite
+Webpack
+ESLint / Prettier
+Jest
+React Testing Library
+Git (GitHub, Bitbucket)
+REST APIs
+GraphQL
+n8n (automatización)
+Figma
+VS Code
+Cursor
+Wordpress

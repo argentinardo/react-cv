@@ -1,0 +1,57 @@
+[
+  {
+    "position": "Frontend Development",
+    "duration": "+10 years",
+    "companies": [
+      "Suntransfers",
+      "Beezy",
+      "Multiplica",
+      "Globant"
+    ],
+    "role": "Scalability, consistency and maintainability of UI components",
+    "tasks": [
+      "Web interface development with HTML5, CSS3 and JavaScript",
+      "Scalable CSS architecture (BEMIT, ITCSS)",
+      "Reusable component development",
+      "Frontend code organization in large-scale projects",
+      "Performance and load time optimization",
+      "Integration with APIs and backend services",
+      "Build environment setup with Webpack",
+      "Use of React, TypeScript, Vue and Storybook"
+    ]
+  },
+  {
+    "position": "CSS Architect",
+    "duration": "+6 years",
+    "companies": [
+      "Beezy",
+      "Suntransfers"
+    ],
+    "role": "Design and maintenance of scalable and consistent CSS architectures",
+    "tasks": [
+      "Definition of design systems and CSS structures",
+      "Scalable CSS architecture (BEMIT, ITCSS)",
+      "Complex layout and modular system development",
+      "Template development with Handlebars and HTML",
+      "Responsive email layout development",
+      "UI visual consistency and quality control"
+    ]
+  },
+  {
+    "position": "Automation & AI-driven Workflows",
+    "duration": "+2 years",
+    "companies": [
+      "Freelance"
+    ],
+    "role": "Process automation and operational efficiency optimization",
+    "tasks": [
+      "Workflow automation with n8n",
+      "API integrations (WhatsApp, Google Workspace, etc.)",
+      "Design of workflows to reduce manual tasks",
+      "Self-hosting solutions using Docker",
+      "Integration of LLM models in local environments",
+      "Automation interface development",
+      "Production maintenance and debugging"
+    ]
+  }
+]

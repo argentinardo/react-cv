@@ -1,0 +1,5 @@
+Aplicaciones de navegación: Google Maps, Waze
+Plataformas VTC: Uber, Cabify
+Uso de GPS y optimización de rutas
+Smartphone y aplicaciones móviles de trabajo
+Gestión básica de incidencias en ruta

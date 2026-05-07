@@ -1,0 +1,36 @@
+[
+  {
+    "puesto": "Mozo de almacén",
+    "duracion": "2 años",
+    "empresas": [
+      "Cooperativa Agrícola Berabevú"
+    ],
+    "role": "Gestión de almacén, preparación de pedidos y organización de mercancía",
+    "tareas": [
+      "Recepción, organización y reposición de mercancía",
+      "Preparación y embalaje de pedidos",
+      "Control de stock e inventario básico",
+      "Mantenimiento del orden y limpieza del almacén",
+      "Cumplimiento de normas de seguridad"
+    ]
+  },
+  {
+    "puesto": "Atención al público y restauración",
+    "duracion": "3 años",
+    "empresas": [
+      "Cibercafé",
+      "Heladería",
+      "Bar",
+      "Restaurante"
+    ],
+    "role": "Atención al cliente en entornos de restauración y servicios",
+    "tareas": [
+      "Atención directa al cliente en mostrador y sala",
+      "Toma de pedidos y servicio de productos",
+      "Preparación básica de alimentos y bebidas",
+      "Cobro en caja y gestión de pagos",
+      "Resolución de incidencias y trato cordial con clientes",
+      "Mantenimiento de limpieza y orden del local"
+    ]
+  }
+]

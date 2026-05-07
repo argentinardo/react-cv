@@ -1,0 +1,8 @@
+{
+  "model": {{ $('Obtener Oferta').item.json.modelo }},
+  "messages": {
+    "role": "assistant",
+    "content": " {{ $('Obtener Oferta').item.json.prompt }} Examina la oferta de la dirección {{ $('Obtener Oferta').item.json['urlOferta'] }}, necesito adaptar la lista de tecnologias {{ $('Obtener Oferta').item.json.tecnologias }}, de los softSkills {{ $('Obtener Oferta').item.json.softSkills }} para que matcheen lo máximo posible a la oferta de empleo}",
+  "stream": false
+}
+

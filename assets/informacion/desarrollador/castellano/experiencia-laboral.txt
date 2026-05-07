@@ -1,0 +1,52 @@
+[
+  {
+    "puesto": "Desarrollo Frontend",
+    "duracion": "+10 años",
+    "empresas": [
+      "Suntransfers",
+      "Beezy",
+      "Multiplica",
+      "Globant"
+    ],
+    "role" : "Escalabilidad, consistencia y mantenibilidad de componentes.",
+    "tareas": [
+      "Desarrollo de interfaces web con HTML5, CSS3 y JavaScript",
+      "Arquitectura CSS escalable (BEMIT, ITCSS)",
+      "Creación de componentes reutilizables",
+      "Organización de código frontend en proyectos grandes",
+      "Optimización de rendimiento y tiempos de carga",
+      "Integración con APIs y servicios backend",
+      "Configuración de entornos con Webpack",
+      "Uso de React, TypeScript, Vue y Storybook"
+    ]
+  },
+  {
+    "puesto": "Arquitecto CSS",
+    "duracion": "+6 años",
+    "empresas": ["Beezy", "Suntransfers"],
+    "role": "Desarrollo y mantenimiento de arquitecturas CSS escalables",
+    "tareas": [
+      "Definición de sistemas de diseño y estructuras CSS",
+      "Arquitectura CSS escalable (BEMIT, ITCSS)",
+      "Creación de layouts complejos y sistemas modulares",
+      "Desarrollo de plantillas con Handlebars y HTML",
+      "Maquetación de emails responsive",
+      "Control de calidad visual y coherencia UI"
+    ]
+  },
+  {
+    "puesto": "Automatización & AI-driven Workflows",
+    "duracion": "+2 años",
+    "empresas": ["Freelance"],
+    "role": "Automatización de tareas repetitivas y mejora de eficiencia.",
+    "tareas": [
+      "Automatización de procesos con n8n",
+      "Integración de APIs (WhatsApp, Google Workspace, etc.)",
+      "Diseño de flujos para reducir tareas manuales",
+      "Autoalojamiento con Docker",
+      "Integración de modelos LLM en entornos locales",
+      "Desarrollo de interfaces para automatizaciones",
+      "Mantenimiento y debugging en producción"
+    ]
+  }
+]

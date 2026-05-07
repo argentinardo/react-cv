@@ -1,0 +1,45 @@
+Languages
+
+JavaScript
+TypeScript
+
+Frontend
+
+React
+Next.js
+HTML / CSS / SCSS / Tailwind
+
+State and data management
+
+Zustand / Redux Toolkit
+TanStack Query (React Query)
+
+Tools
+
+Vite
+Webpack
+ESLint / Prettier
+
+Testing
+
+Jest
+React Testing Library
+
+Version control
+
+Git (GitHub, Bitbucket)
+
+APIs and integration
+
+REST APIs
+GraphQL
+n8n (automation)
+
+Design
+
+Figma
+
+Environment
+
+VS Code
+Cursor

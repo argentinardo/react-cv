@@ -1,0 +1,44 @@
+[
+  {
+    "puesto": "Conductor – Remisería",
+    "duracion": "2 años",
+    "empresas": [
+      "Remisería (Argentina)"
+    ],
+    "role": "Transporte de pasajeros y atención al cliente en entornos urbanos e interurbanos",
+    "tareas": [
+      "Transporte de pasajeros en trayectos urbanos e interurbanos",
+      "Atención al cliente y trato profesional",
+      "Gestión eficiente de rutas y tiempos",
+      "Resolución de imprevistos durante el servicio"
+    ]
+  },
+  {
+    "puesto": "Operador de maquinaria agrícola / Conductor",
+    "duracion": "3 años",
+    "empresas": [
+      "Sector agrícola (Argentina)"
+    ],
+    "role": "Operación de maquinaria y conducción en entornos rurales",
+    "tareas": [
+      "Manejo de maquinaria agrícola en entornos rurales",
+      "Conducción en condiciones variables (terreno irregular, clima, visibilidad)",
+      "Responsabilidad sobre equipos y seguridad operativa",
+      "Mantenimiento básico de maquinaria"
+    ]
+  },
+  {
+    "puesto": "Conductor – Vehículo técnico (mantenimiento de antenas)",
+    "duracion": "1 año aprox.",
+    "empresas": [
+      "Servicio técnico de telecomunicaciones"
+    ],
+    "role": "Conducción y soporte logístico para mantenimiento de infraestructura técnica",
+    "tareas": [
+      "Conducción de camión de trabajo para mantenimiento de infraestructura",
+      "Desplazamientos a distintas ubicaciones para reparación de antenas de internet",
+      "Coordinación con equipo técnico",
+      "Apoyo en tareas logísticas del servicio"
+    ]
+  }
+]

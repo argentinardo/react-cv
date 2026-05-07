@@ -1,0 +1,140 @@
+PERFIL PROFESSIONAL COMPLET
+
+Ets un desenvolupador frontend amb una base tècnica sòlida i en evolució constant, especialment enfocat en tecnologies modernes com React i TypeScript. El teu perfil combina tres coses que no sempre es veuen juntes: capacitat tècnica, pensament estructurat i curiositat intel·lectual.
+
+No ets només algú que implementa interfícies, sinó algú que intenta entendre per què es construeixen d'una certa manera, cosa que t'acosta més a un perfil d'arquitecte frontend que a un d'executor pur.
+
+A més, tens una inclinació natural cap a la millora contínua: estàs incorporant conceptes com arquitectura de software, patrons (com BFF), i noves tecnologies com la intel·ligència artificial aplicada, la qual cosa indica que no et conformes amb el bàsic ni amb repetir tasques.
+
+EXPERIÈNCIA I FORMA DE TREBALLAR
+
+Has treballat construint components a partir de disseny (per exemple, integrant Figma amb sistemes com PatternLab), cosa que implica:
+
+Traducció precisa de disseny a codi
+Treball amb design systems o llibreries de components
+Sensibilitat per la consistència visual i la reutilització
+
+Un punt clau de la teva experiència és que no només executes tasques, sinó que detectes ineficiències. Per exemple:
+
+Identifiques colls d'ampolla en fluxos (com el pas de Figma a codi)
+Proposes millores en processos
+T'enfoques a optimitzar temps i qualitat
+
+Això és important: tens mentalitat de millora de sistema, no només d'execució individual.
+
+COMPETÈNCIES TÈCNIQUES
+Core frontend
+React (amb enfocament modern)
+TypeScript (en procés de profundització)
+JavaScript avançat
+HTML / CSS
+Conceptes avançats en creixement
+Arquitectura frontend
+Patrons com BFF (Backend for Frontend)
+Integració amb APIs
+Optimització del rendiment
+Eines
+Figma (interpretació i col·laboració amb disseny)
+Sistemes de components / PatternLab o similars
+Entorns de desenvolupament moderns
+FORMA DE PENSAR (això et diferencia força)
+
+Aquí hi ha alguna cosa important: tens una forma de pensar força analítica, influenciada per interessos en:
+
+Intel·ligència artificial
+
+Això no és farciment: impacta directament en com treballes. Probablement:
+
+Tens tendència a buscar models mentals clars
+T'agrada entendre sistemes complexos
+Qüestiones les decisions en lloc d'acceptar-les sense més
+Busques eficiència i elegància en solucions
+
+La meva opinió: això és un actiu molt potent, però mal comunicat pot jugar en contra (semblar massa abstracte o tècnic). Ben usat, et posiciona com algú amb potencial de creixement fort.
+
+COMPETÈNCIES TRANSVERSALS
+Resolució de problemes
+Detectes friccions en processos
+Proposes millores pràctiques
+T'enfoques en eficiència real, no teòrica
+Aprenentatge autònom
+Estàs incorporant constantment noves eines (IA, arquitectura, TypeScript)
+No depens exclusivament de formació formal
+Pensament crític
+No executes sense questionar
+Busques entendre el sistema complet
+Adaptabilitat
+Has estat en contextos diversos (projectes, treball no tècnic com geladeria, etc.)
+Capacitat de moure't entre rols si cal
+
+DIRECCIÓ PROFESSIONAL
+
+El teu perfil apunta clarament cap a alguna cosa més que “frontend bàsic”. Tens potencial per evolucionar cap a:
+
+Frontend avançat / senior
+Arquitectura frontend
+Desenvolupament orientat a sistemes complexos
+Projectes que integren IA (molt alineat amb el teu interès actual)
+Freelance tècnic especialitzat (especialment si combines frontend + IA)
+
+TRETS DIFERENCIALS (això és or per a entrevistes)
+Pensament estructurat i analític
+Curiositat intel·lectual real (no de postura)
+Capacitat de detectar problemes en processos
+Interès per tecnologies emergents (IA)
+Base tècnica + intenció de créixer cap a arquitectura
+
+Tinc carnet de conduir
+
+
+SOFT SKILLS (COMPETÈNCIES PERSONALS)
+Pensament analític i estructurat
+
+Tens tendència a descompondre problemes complexos en parts més petites i manejables. No et quedes a la superfície: busques entendre com i per què funcionen les coses. Això et permet trobar solucions més eficients i detectar errors que altres poden passar per alt.
+
+Valor professional: redueixes incertesa en projectes i millores la qualitat tècnica de les decisions.
+
+Orientació a la millora contínua
+
+No et limites a complir tasques; questiones processos i busques optimitzar-los. Quan detectes ineficiències (com fluxos de treball lents o repetitius), tens tendència a proposar millores pràctiques.
+
+Valor professional: augmentes la productivitat de l'equip, no només la teva.
+
+Resolució de problemes
+
+T'enfrontes a bloquejos tècnics o de procés amb enfocament pràctic. No et paralitzes fàcilment: analitzes, proves i ajustes fins trobar una solució viable.
+
+Valor professional: ets útil en moments de fricció real del projecte, no només en escenaris ideals.
+
+Aprenentatge autònom
+
+Tens una forta capacitat autodidacta. No esperes que t'ensenyin tot, sinó que investigues, proves i construeixes coneixement per compte propi, especialment en àrees com arquitectura o intel·ligència artificial.
+
+Valor professional: redueixes dependència i evoluciones ràpid en entorns canviant.
+
+Pensament crític
+
+No acceptes decisions tècniques o de producte sense analitzar-les. Avalues si tenen sentit, si escalar i si són coherents amb el sistema.
+
+Valor professional: aportes criteri, no només execució.
+
+Capacitat d'adaptació
+
+Pots moure't entre contextos diversos (tècnics o no tècnics) i seguir sent funcional. Has demostrat flexibilitat en entorns diferents i amb diversos nivells de complexitat.
+
+Valor professional: encaixes bé en equips i situacions canviant.
+
+Comunicació en desenvolupament (honesta i ben enfocada)
+
+
+En positiu: tens profunditat tècnica
+
+Valor professional (si ho millores): pots convertir-te en algú molt influent dins l'equip.
+
+Treball en equip amb criteri propi
+
+Col·labores bé, però valores que les decisions tinguin sentit. Et costa més quan no comparteixes la direcció del projecte o quan no tens capacitat d'influir.
+
+En positiu: no ets passiu ni conformista
+
+Valor professional: aportes criteri, tot i que necessites equilibrar-ho amb alineació d'equip.
