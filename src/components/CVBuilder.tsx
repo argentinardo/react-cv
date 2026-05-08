@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { userData, profileMap, type ProfileKey } from '@/data/user-profiles';
+import { userData, getProfile, profileMeta, type ProfileKey, type LanguageKey } from '@/data/user-profiles';
 
-function buildCVHtml(profileKey: ProfileKey): string {
-  const profile = profileMap[profileKey];
+function buildCVHtml(profileKey: ProfileKey, language: LanguageKey = 'castellano'): string {
+  const profile = getProfile(profileKey, language);
   const h = userData.header;
-  const meta = userData.meta[profileKey];
+  const meta = profileMeta[profileKey];
 
   const expHtml = profile.experiencia.map((e) => `
     <div class="exp-entry">

@@ -1,16 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { CVMasterData } from '@/types/cv';
-import { userData, profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
+import { userData, getProfile, profileMeta, profileMap, type ProfileKey, type LanguageKey } from '@/data/user-profiles';
 import { inferPortal, detectLanguage } from '@/utils/helpers';
 
-function buildPrompt(ofertaTexto: string, perfil: string, instrucciones: string): string {
-  const idioma = detectLanguage(ofertaTexto);
-  const profileKey = perfil as ProfileKey;
-  const profile = profileMap[profileKey] || profileMap.desarrollador;
-  const header = userData.header;
+function mapLanguage(detected: string): LanguageKey {
+  const lower = detected.toLowerCase();
+  if (lower.includes('catalan') || lower.includes('català') || lower.includes('catalan')) return 'catalan';
+  if (lower.includes('english') || lower.includes('inglés') || lower.includes('anglès') || lower.includes('en ')) return 'english';
+  return 'castellano';
+}
 
-  return `Eres un experto en redacción de CVs adaptados a ofertas laborales.
-
+const systemPromptByLang: Record<LanguageKey, string> = {
+  castellano: `Eres un experto en redacción de CVs adaptados a ofertas laborales.
 ANALIZA la oferta y genera un JSON con el CV adaptado.
 
 REGLAS:
@@ -25,7 +26,51 @@ REGLAS:
 9. resumenOferta → 2-3 frases resumiendo la oferta de trabajo.
 10. NO inventes puestos, empresas, fechas ni tecnologías que no estén en el perfil base.
 11. Devuelve SOLO JSON válido. Sin texto antes ni después, sin markdown.
-12. empresaOferta → Nombre exacto de la empresa que publica la oferta. Si no se menciona, pon "Empresa no especificada".
+12. empresaOferta → Nombre exacto de la empresa que publica la oferta. Si no se menciona, pon "Empresa no especificada".`,
+  catalan: `Ets un expert en redacció de CVs adaptats a ofertes laborals.
+ANALITZA l'oferta i genera un JSON amb el CV adaptat.
+
+REGLES:
+1. sobreMi → Reescriu el text base del perfil perquè encaixi amb l'oferta. Màx 2 paràgrafs.
+2. tecnologias → Tria màx 10 del pool del perfil. Les que menciona l'oferta van primer.
+3. softSkills → Tria màx 5 del pool del perfil. Les que coincideixen amb l'oferta van primer.
+4. experiencia.tareas → Per CADA experiència, adapta les tasques perquè ressonin amb l'oferta. NO canviar títol, durada, ocupació ni empreses.
+5. formacion i idiomas → Mantenir igual a les dades base.
+6. header.titulacion → Infeir de l'oferta. La resta de l'header usar les dades fixes.
+7. foto → Usar la foto del perfil base.
+8. cartaIntencion → Carta de màxim 60 paraules dirigida a l'empresa, mostrant motivació i 2 punts forts.
+9. resumenOferta → 2-3 frases resumint l'oferta de treball.
+10. NO inventis llocs, empreses, dates ni tecnologies que no estiguin al perfil base.
+11. Retorna NOMÉS JSON vàlid. Sense text abans ni després, sense markdown.
+12. empresaOferta → Nom exacte de l'empresa que publica l'oferta. Si no es menciona, posa "Empresa no especificada".`,
+  english: `You are an expert in CV writing adapted to job offers.
+ANALYZE the job offer and generate a JSON with the adapted CV.
+
+RULES:
+1. sobreMi → Rewrite the base profile text to fit the offer. Max 2 paragraphs.
+2. tecnologias → Pick max 10 from the profile pool. Those mentioned in the offer go first.
+3. softSkills → Pick max 5 from the profile pool. Those matching the offer go first.
+4. experiencia.tareas → For EACH experience, adapt the tasks to resonate with the offer. DO NOT change title, duration, occupation, or companies.
+5. formacion and idiomas → Keep the same as base data.
+6. header.titulacion → Infer from the offer. The rest of the header use the fixed data.
+7. foto → Use the base profile photo.
+8. cartaIntencion → Cover letter of max 60 words addressed to the company, showing motivation and 2 strong points.
+9. resumenOferta → 2-3 sentences summarizing the job offer.
+10. DO NOT invent positions, companies, dates, or technologies not in the base profile.
+11. Return ONLY valid JSON. No text before or after, no markdown.
+12. empresaOferta → Exact name of the company publishing the offer. If not mentioned, put "Company not specified".`,
+};
+
+function buildPrompt(ofertaTexto: string, perfil: string, instrucciones: string): string {
+  const detectedLang = detectLanguage(ofertaTexto);
+  const language = mapLanguage(detectedLang);
+  const profileKey = (perfil in profileMap ? perfil : 'desarrollador') as ProfileKey;
+  const profile = getProfile(profileKey, language);
+  const { header } = userData;
+
+  const systemPrompt = systemPromptByLang[language];
+
+  return `${systemPrompt}
 
 ---
 DATOS FIJOS DEL CANDIDATO:
@@ -63,7 +108,9 @@ ${profile.idiomas.map((i: { [idioma: string]: string[] }) => {
   }).join('\n')}
 
 ---
-OFERTA (${idioma}):
+IDIOMA DE LA OFERTA: ${detectedLang} → RESPONDER EN ${detectedLang.toUpperCase()}.
+---
+OFERTA:
 ${ofertaTexto}
 
 ${instrucciones ? `EXTRA: ${instrucciones}` : ''}
@@ -76,7 +123,7 @@ JSON DE SALIDA (generá el JSON completo):
   "sobreMi": "...",
   "tecnologias": ["...", "..."],
   "softSkills": ["...", "..."],
-  "idiomas": [${profile.idiomas.map((i: { [idioma: string]: string[] }) => JSON.stringify(i)).join(', ')}],
+  "idiomas": [${profile.idiomas.map((i) => JSON.stringify(i)).join(', ')}],
   "experiencia": [${profile.experiencia.map((e) => `{"titulo":"${e.cargo}","duracion":"${e.periodo}","ocupacion":"${e.empresa}","empresas":["${e.empresa}"],"tareas":["..."]}`).join(', ')}],
   "formacion": "${profile.formacion.replace(/"/g, '\\"')}",
   "cartaIntencion": "...",
@@ -206,8 +253,8 @@ function normalizeKeys(obj: Record<string, unknown>): Record<string, unknown> {
   return normalized;
 }
 
-function buildDefaultCV(profileKey: ProfileKey): CVMasterData {
-  const profile = profileMap[profileKey] || profileMap.desarrollador;
+function buildDefaultCV(profileKey: ProfileKey, language: LanguageKey): CVMasterData {
+  const profile = getProfile(profileKey, language);
   return {
     header: { ...userData.header, titulacion: profileMeta[profileKey]?.label || '' },
     foto: profileMeta[profileKey]?.foto || '',
@@ -229,8 +276,8 @@ function buildDefaultCV(profileKey: ProfileKey): CVMasterData {
   };
 }
 
-function parseCVResponse(text: string, profileKey: ProfileKey): CVMasterData {
-  const defaults = buildDefaultCV(profileKey);
+function parseCVResponse(text: string, profileKey: ProfileKey, language: LanguageKey): CVMasterData {
+  const defaults = buildDefaultCV(profileKey, language);
 
   const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
   const firstBrace = cleaned.indexOf('{');
@@ -298,6 +345,7 @@ export async function generateCVFromOffer(
 ): Promise<CVMasterData> {
   const prompt = buildPrompt(ofertaTexto, perfil, instrucciones);
   const profileKey = (perfil in profileMap ? perfil : 'desarrollador') as ProfileKey;
+  const language = mapLanguage(detectLanguage(ofertaTexto));
 
   let response: string;
   switch (iaEngine) {
@@ -317,7 +365,7 @@ export async function generateCVFromOffer(
       throw new Error(`Motor IA no soportado: ${iaEngine}`);
   }
 
-  return parseCVResponse(response, profileKey);
+  return parseCVResponse(response, profileKey, language);
 }
 
 export { inferPortal, detectLanguage };

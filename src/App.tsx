@@ -5,7 +5,6 @@ import NuevaPostulacion from './components/NuevaPostulacion';
 import CVBuilder from './components/CVBuilder';
 import CVViewer from './components/CVViewer';
 import EditarPostulacion from './components/EditarPostulacion';
-import CrearCV from './components/CrearCV';
 
 export default function App() {
   return (
@@ -13,8 +12,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
-          <Route path="postulaciones" element={<Dashboard />} />
-          <Route path="crear" element={<CrearCV />} />
           <Route path="nueva" element={<NuevaPostulacion />} />
           <Route path="cv-builder" element={<CVBuilder />} />
           <Route path="cv/:id" element={<CVViewer />} />

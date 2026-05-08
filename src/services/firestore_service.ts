@@ -84,13 +84,25 @@ export async function getPostulaciones(pageSize = 15, lastVisible?: QueryDocumen
 }
 
 export async function getPostulacionesByEstado(estado: string): Promise<Postulacion[]> {
-  const q = query(
-    collection(db, COLLECTION),
-    where('estado', '==', estado),
-    orderBy('createdAt', 'desc')
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Postulacion);
+  try {
+    const q = query(
+      collection(db, COLLECTION),
+      where('estado', '==', estado),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Postulacion);
+  } catch {
+    const snapshot = await getDocs(collection(db, COLLECTION));
+    return snapshot.docs
+      .filter((d) => d.data().estado === estado)
+      .sort((a, b) => {
+        const aTime = a.data().createdAt?.toMillis?.() || 0;
+        const bTime = b.data().createdAt?.toMillis?.() || 0;
+        return bTime - aTime;
+      })
+      .map((d) => ({ id: d.id, ...d.data() }) as Postulacion);
+  }
 }
 
 export async function getCountByEstado(): Promise<Record<string, number>> {

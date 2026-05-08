@@ -47,6 +47,43 @@ function ResumenModal({ post, onClose }: { post: Postulacion; onClose: () => voi
   );
 }
 
+function NotasModal({ post, onClose, onSave }: { post: Postulacion; onClose: () => void; onSave: (notas: string) => void }) {
+  const [text, setText] = useState(post.notas || '');
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Notas</h3>
+          <button
+            onClick={() => { onSave(text); onClose(); }}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <textarea
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Añade notas sobre esta postulación..."
+          rows={8}
+          className="form-textarea w-full resize-y text-sm"
+        />
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => { onSave(text); onClose(); }}
+            className="btn bg-violet-500 hover:bg-violet-600 text-white"
+          >
+            <X className="w-4 h-4" />
+            Cerrar y guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({ total: 0, 'Pendiente': 0, 'Enviado': 0, 'En proceso': 0, 'Descartado': 0 });
@@ -56,6 +93,7 @@ export default function Dashboard() {
   const [hasMore, setHasMore] = useState(false);
   const [cartaPost, setCartaPost] = useState<Postulacion | null>(null);
   const [resumenPost, setResumenPost] = useState<Postulacion | null>(null);
+  const [notasPost, setNotasPost] = useState<Postulacion | null>(null);
 
   const loadCounts = async () => {
     const c = await getCountByEstado();
@@ -64,16 +102,22 @@ export default function Dashboard() {
 
   const loadItems = async () => {
     setLoading(true);
-    let result: PaginatedResult;
-    if (filter) {
-      const filtered = await getPostulacionesByEstado(filter);
-      result = { items: filtered.slice(0, 15), lastVisible: null, hasMore: filtered.length > 15 };
-    } else {
-      result = await getPostulaciones(15);
+    try {
+      let result: PaginatedResult;
+      if (filter) {
+        const filtered = await getPostulacionesByEstado(filter);
+        result = { items: filtered.slice(0, 15), lastVisible: null, hasMore: filtered.length > 15 };
+      } else {
+        result = await getPostulaciones(15);
+      }
+      setItems(result.items);
+      setHasMore(result.hasMore);
+    } catch (e) {
+      console.error('Error loading items:', e);
+      setItems([]);
+    } finally {
+      setLoading(false);
     }
-    setItems(result.items);
-    setHasMore(result.hasMore);
-    setLoading(false);
   };
 
   useEffect(() => { loadCounts(); }, []);
@@ -92,8 +136,9 @@ export default function Dashboard() {
     loadItems();
   };
 
-  const handleNotasChange = async (id: string, notas: string) => {
+  const handleNotasSave = async (id: string, notas: string) => {
     await updatePostulacion(id, { notas });
+    loadItems();
   };
 
   return (
@@ -155,7 +200,7 @@ export default function Dashboard() {
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">CV</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Carta</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Estado</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400 w-36">Notas</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Notas</th>
                 <th className="text-right px-4 py-3 font-semibold text-gray-600 dark:text-gray-400">Acciones</th>
               </tr>
             </thead>
@@ -175,8 +220,8 @@ export default function Dashboard() {
               )}
               {items.map((item) => (
                 <tr key={item.id} className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{item.empresa}</td>
-                  <td className="px-4 py-3 text-gray-500 max-w-[150px] truncate">
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 max-w-[160px] truncate">{item.empresa}</td>
+                  <td className="px-4 py-3 text-gray-500 max-w-[120px] truncate">
                     {item.urlOferta ? (
                       <a href={item.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline truncate">{item.urlOferta}</a>
                     ) : (
@@ -237,13 +282,23 @@ export default function Dashboard() {
                     </select>
                   </td>
                   <td className="px-4 py-3">
-                    <textarea
-                      defaultValue={item.notas || ''}
-                      onBlur={(e) => handleNotasChange(item.id!, e.target.value)}
-                      placeholder="..."
-                      rows={2}
-                      className="form-textarea text-xs py-1 px-2 w-36 resize-none"
-                    />
+                    {item.notas ? (
+                      <button
+                        onClick={() => setNotasPost(item)}
+                        className="text-green-500 hover:text-green-700 flex items-center gap-1 text-xs font-medium"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        Ver
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setNotasPost(item)}
+                        className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-xs font-medium"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        Añadir
+                      </button>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
@@ -281,6 +336,7 @@ export default function Dashboard() {
       {/* Modals */}
       {cartaPost && <CartaModal post={cartaPost} onClose={() => setCartaPost(null)} />}
       {resumenPost && <ResumenModal post={resumenPost} onClose={() => setResumenPost(null)} />}
+      {notasPost && <NotasModal post={notasPost} onClose={() => setNotasPost(null)} onSave={(notas) => handleNotasSave(notasPost.id!, notas)} />}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { CVMasterData } from '@/types/cv';
-import { userData, type ProfileKey } from '@/data/user-profiles';
+import { profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import { generateCVFromOffer } from '@/services/ai_service';
 import { savePostulacion } from '@/services/firestore_service';
@@ -26,9 +26,9 @@ const IA_ENGINES: Record<string, { label: string; models: string[] }> = {
   deepseek: { label: 'DeepSeek', models: ['deepseek-v4-flash', 'deepseek-v4-pro'] },
 };
 
-const profiles = Object.entries(userData.profiles).map(([key]) => ({
+const profiles = Object.keys(profileMap).map((key) => ({
   key: key as ProfileKey,
-  label: userData.meta[key as ProfileKey]?.label || key,
+  label: profileMeta[key as ProfileKey]?.label || key,
 }));
 
 type Step = 'form' | 'editing' | 'done';

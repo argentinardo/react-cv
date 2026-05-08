@@ -103,33 +103,33 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, variant = 'defaul
                 </NavLink>
               </li>
 
-              {/* Postulaciones */}
-              <li className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r ${pathname.includes('postulaciones') && 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]'}`}>
+              {/* Nueva Postulación */}
+              <li className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r ${pathname.includes('nueva') && 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]'}`}>
                 <NavLink
-                  to="/postulaciones"
-                  className={`block text-gray-800 dark:text-gray-100 truncate transition duration-150 ${pathname.includes('postulaciones') ? '' : 'hover:text-gray-900 dark:hover:text-white'}`}
+                  to="/nueva"
+                  className={`block text-gray-800 dark:text-gray-100 truncate transition duration-150 ${pathname.includes('nueva') ? '' : 'hover:text-gray-900 dark:hover:text-white'}`}
                 >
                   <div className="flex items-center">
-                    <svg className={`shrink-0 fill-current ${pathname.includes('postulaciones') ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                      <path d="M14.5 3h-13A1.5 1.5 0 0 0 0 4.5v7A1.5 1.5 0 0 0 1.5 13h13a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 14.5 3ZM14 11.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7Z" />
-                      <path d="M3 6h10v1H3V6Zm0 2.5h10v1H3v-1Zm0 2.5h7v1H3v-1Z" />
+                    <svg className={`shrink-0 fill-current ${pathname.includes('nueva') ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <path d="M15 7H9V1c0-.6-.4-1-1-1s-1 .4-1 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1Z" />
                     </svg>
-                    <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Postulaciones</span>
+                    <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Nueva Postulación</span>
                   </div>
                 </NavLink>
               </li>
 
-              {/* Crear CV */}
-              <li className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r ${(pathname.includes('nueva') || pathname.includes('cv-builder') || pathname.includes('crear')) && 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]'}`}>
+              {/* CV Builder */}
+              <li className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-linear-to-r ${pathname.includes('cv-builder') && 'from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]'}`}>
                 <NavLink
-                  to="/crear"
-                  className={`block text-gray-800 dark:text-gray-100 truncate transition duration-150 ${(pathname.includes('nueva') || pathname.includes('cv-builder') || pathname.includes('crear')) ? '' : 'hover:text-gray-900 dark:hover:text-white'}`}
+                  to="/cv-builder"
+                  className={`block text-gray-800 dark:text-gray-100 truncate transition duration-150 ${pathname.includes('cv-builder') ? '' : 'hover:text-gray-900 dark:hover:text-white'}`}
                 >
                   <div className="flex items-center">
-                    <svg className={`shrink-0 fill-current ${(pathname.includes('nueva') || pathname.includes('cv-builder') || pathname.includes('crear')) ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                      <path d="M15 7H9V1c0-.6-.4-1-1-1s-1 .4-1 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1Z" />
+                    <svg className={`shrink-0 fill-current ${pathname.includes('cv-builder') ? 'text-violet-500' : 'text-gray-400 dark:text-gray-500'}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <path d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1ZM2 13V3h12v10H2Z" />
+                      <path d="M4 5h8v1H4V5Zm0 3h8v1H4V8Zm0 3h5v1H4v-1Z" />
                     </svg>
-                    <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Crear CV</span>
+                    <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">CV Builder</span>
                   </div>
                 </NavLink>
               </li>
