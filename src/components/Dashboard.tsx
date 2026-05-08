@@ -29,6 +29,24 @@ function CartaModal({ post, onClose }: { post: Postulacion; onClose: () => void 
   );
 }
 
+function ResumenModal({ post, onClose }: { post: Postulacion; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Resumen de la Oferta</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+          {post.resumenOferta || 'No se generó resumen de la oferta para esta postulación.'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({ total: 0, 'Pendiente': 0, 'Enviado': 0, 'En proceso': 0, 'Descartado': 0 });
@@ -37,6 +55,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [cartaPost, setCartaPost] = useState<Postulacion | null>(null);
+  const [resumenPost, setResumenPost] = useState<Postulacion | null>(null);
 
   const loadCounts = async () => {
     const c = await getCountByEstado();
@@ -168,7 +187,19 @@ export default function Dashboard() {
                   <td className="px-4 py-3 text-gray-500">
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-xs">{item.modeloIA}</span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500 max-w-[180px] truncate" title={item.resumenOferta}>{item.resumenOferta}</td>
+                  <td className="px-4 py-3">
+                    {item.resumenOferta ? (
+                      <button
+                        onClick={() => setResumenPost(item)}
+                        className="text-amber-500 hover:text-amber-700 flex items-center gap-1 text-xs font-medium"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        Ver
+                      </button>
+                    ) : (
+                      <span className="text-gray-400 text-xs">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     {item.id && (
                       <button
@@ -207,8 +238,8 @@ export default function Dashboard() {
                   </td>
                   <td className="px-4 py-3">
                     <textarea
-                      value={item.notas || ''}
-                      onChange={(e) => handleNotasChange(item.id!, e.target.value)}
+                      defaultValue={item.notas || ''}
+                      onBlur={(e) => handleNotasChange(item.id!, e.target.value)}
                       placeholder="..."
                       rows={2}
                       className="form-textarea text-xs py-1 px-2 w-36 resize-none"
@@ -247,8 +278,9 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Carta Modal */}
+      {/* Modals */}
       {cartaPost && <CartaModal post={cartaPost} onClose={() => setCartaPost(null)} />}
+      {resumenPost && <ResumenModal post={resumenPost} onClose={() => setResumenPost(null)} />}
     </div>
   );
 }

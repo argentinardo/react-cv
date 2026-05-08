@@ -83,10 +83,9 @@ export default function NuevaPostulacion() {
   const handleGuardar = async (data: CVMasterData) => {
     setSaving(true);
     try {
-      const perfilKey = perfil === 'custom' ? perfilCustom : perfil;
       const portal = urlOferta ? inferPortal(urlOferta) : 'Manual';
       await savePostulacion({
-        empresa: urlOferta ? portal : perfilKey,
+        empresa: data.empresaOferta || portal,
         portal,
         urlOferta,
         fecha: new Date().toISOString().split('T')[0],

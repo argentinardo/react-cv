@@ -29,6 +29,7 @@ export interface CVMasterData {
   formacion: string;
   cartaIntencion: string;
   resumenOferta: string;
+  empresaOferta: string;
 }
 
 export interface Postulacion {

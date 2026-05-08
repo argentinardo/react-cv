@@ -25,6 +25,7 @@ REGLAS:
 9. resumenOferta → 2-3 frases resumiendo la oferta de trabajo.
 10. NO inventes puestos, empresas, fechas ni tecnologías que no estén en el perfil base.
 11. Devuelve SOLO JSON válido. Sin texto antes ni después, sin markdown.
+12. empresaOferta → Nombre exacto de la empresa que publica la oferta. Si no se menciona, pon "Empresa no especificada".
 
 ---
 DATOS FIJOS DEL CANDIDATO:
@@ -79,7 +80,8 @@ JSON DE SALIDA (generá el JSON completo):
   "experiencia": [${profile.experiencia.map((e) => `{"titulo":"${e.cargo}","duracion":"${e.periodo}","ocupacion":"${e.empresa}","empresas":["${e.empresa}"],"tareas":["..."]}`).join(', ')}],
   "formacion": "${profile.formacion.replace(/"/g, '\\"')}",
   "cartaIntencion": "...",
-  "resumenOferta": "..."
+  "resumenOferta": "...",
+  "empresaOferta": "..."
 }`;
 }
 
@@ -223,6 +225,7 @@ function buildDefaultCV(profileKey: ProfileKey): CVMasterData {
     formacion: profile.formacion,
     cartaIntencion: '',
     resumenOferta: '',
+    empresaOferta: '',
   };
 }
 
@@ -282,6 +285,7 @@ function parseCVResponse(text: string, profileKey: ProfileKey): CVMasterData {
     formacion: (parsed.formacion as string) || defaults.formacion,
     cartaIntencion: (parsed.cartaIntencion as string) || '',
     resumenOferta: (parsed.resumenOferta as string) || '',
+    empresaOferta: (parsed.empresaOferta as string) || '',
   };
 }
 
