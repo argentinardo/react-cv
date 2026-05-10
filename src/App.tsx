@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard';
 import NuevaPostulacion from './components/NuevaPostulacion';
 import CVBuilder from './components/CVBuilder';
 import CVViewer from './components/CVViewer';
+import DetallePostulacion from './components/DetallePostulacion';
 import EditarPostulacion from './components/EditarPostulacion';
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="nueva" element={<NuevaPostulacion />} />
           <Route path="cv-builder" element={<CVBuilder />} />
           <Route path="cv/:id" element={<CVViewer />} />
+          <Route path="detalle/:id" element={<DetallePostulacion />} />
           <Route path="editar/:id" element={<EditarPostulacion />} />
         </Route>
       </Routes>

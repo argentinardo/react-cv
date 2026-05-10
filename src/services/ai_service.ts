@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { CVMasterData } from '@/types/cv';
 import { userData, getProfile, profileMeta, profileMap, type ProfileKey, type LanguageKey } from '@/data/user-profiles';
-import { inferPortal, detectLanguage } from '@/utils/helpers';
+import { inferPortal, detectLanguage, getLangName } from '@/utils/helpers';
 
 function mapLanguage(detected: string): LanguageKey {
   const lower = detected.toLowerCase();
@@ -108,7 +108,7 @@ ${profile.idiomas.map((i: { [idioma: string]: string[] }) => {
   }).join('\n')}
 
 ---
-IDIOMA DE LA OFERTA: ${detectedLang} → RESPONDER EN ${detectedLang.toUpperCase()}.
+IDIOMA DE LA OFERTA: ${detectedLang} → RESPONDE EN ${getLangName(detectedLang)}.
 ---
 OFERTA:
 ${ofertaTexto}

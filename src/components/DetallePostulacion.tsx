@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Printer, Download } from 'lucide-react';
+import { ArrowLeft, Printer, Download, Pencil, ExternalLink, FileText } from 'lucide-react';
 import { getPostulacionById } from '@/services/firestore_service';
 import type { Postulacion, CVMasterData } from '@/types/cv';
 
@@ -26,8 +26,14 @@ function t(section: string, lang: string): string {
   return SECTION_TITLES[section]?.[lang] || SECTION_TITLES[section]?.es || section;
 }
 
-function buildCVHtml(post: Postulacion): string {
-  const { cvData: cv } = post;
+const ESTADO_STYLES: Record<string, string> = {
+  'Pendiente': 'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/30',
+  'Enviado': 'text-sky-600 bg-sky-100 dark:text-sky-300 dark:bg-sky-900/30',
+  'En proceso': 'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/30',
+  'Descartado': 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30',
+};
+
+function buildCVHtml(cv: CVMasterData): string {
   const lang = detectCvLang(cv);
   const h = cv.header;
 
@@ -138,7 +144,7 @@ function buildCVHtml(post: Postulacion): string {
 </html>`;
 }
 
-export default function CVViewer() {
+export default function DetallePostulacion() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<Postulacion | null>(null);
@@ -159,7 +165,7 @@ export default function CVViewer() {
     if (!post) return;
     const iframe = iframeRef.current;
     if (!iframe) return;
-    const html = buildCVHtml(post);
+    const html = buildCVHtml(post.cvData);
     const doc = iframe.contentDocument;
     if (doc) {
       doc.open();
@@ -170,7 +176,7 @@ export default function CVViewer() {
 
   const handlePrint = () => {
     if (!post) return;
-    const html = buildCVHtml(post);
+    const html = buildCVHtml(post.cvData);
     const win = window.open('', '_blank');
     if (!win) return;
     win.document.write(html);
@@ -181,7 +187,7 @@ export default function CVViewer() {
 
   const handleDownload = () => {
     if (!post) return;
-    const html = buildCVHtml(post);
+    const html = buildCVHtml(post.cvData);
     const blob = new Blob([`<!DOCTYPE html>\n${html}`], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -222,6 +228,10 @@ export default function CVViewer() {
           </div>
         </div>
         <div className="flex gap-2">
+          <button onClick={() => navigate(`/cv/${post.id}`)} className="btn border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+            <ExternalLink className="w-4 h-4" />
+            CV completo
+          </button>
           <button onClick={handlePrint} className="btn bg-violet-500 hover:bg-violet-600 text-white">
             <Printer className="w-4 h-4" />
             Imprimir
@@ -231,19 +241,96 @@ export default function CVViewer() {
             Descargar
           </button>
           <button onClick={() => navigate(`/editar/${post.id}`)} className="btn border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+            <Pencil className="w-4 h-4" />
             Editar
           </button>
         </div>
       </div>
 
-      <div className="bg-white shadow-xs rounded-xl overflow-hidden">
-        <iframe
-          ref={iframeRef}
-          className="w-full border-0"
-          style={{ height: '1150px' }}
-          title="CV Preview"
-          sandbox="allow-scripts allow-same-origin allow-modals"
-        />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 space-y-4">
+          <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-violet-500" />
+              Resumen de la Oferta
+            </h2>
+            <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+              {post.resumenOferta || 'No se generó resumen.'}
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-sky-500" />
+              Carta de Intención
+            </h2>
+            <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+              {post.cartaIntencion || 'No se generó carta.'}
+            </p>
+          </div>
+
+          {post.notas && (
+            <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-green-500" />
+                Notas
+              </h2>
+              <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+                {post.notas}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          
+        <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
+            <div className="p-5 border-b border-gray-100 dark:border-gray-700/50">
+              <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vista previa del CV</h2>
+            </div>
+            <div className="relative" style={{ height: '500px' }}>
+              <iframe
+                ref={iframeRef}
+                className="w-full h-full border-0"
+                title="CV Preview"
+                sandbox="allow-scripts allow-same-origin allow-modals"
+                style={{ transform: 'scale(0.6)', transformOrigin: 'top left', width: '166.66%', height: '166.66%' }}
+              />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 space-y-3">
+            <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Detalles</h2>
+            <div className="space-y-2.5 text-sm">
+              <div>
+                <span className="text-gray-400 text-xs">Portal</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.portal || '—'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">URL</span>
+                <p className="truncate">
+                  {post.urlOferta ? (
+                    <a href={post.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline">
+                      {post.urlOferta}
+                    </a>
+                  ) : '—'}
+                </p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Modelo IA</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.modeloIA}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Fecha</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.fecha}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Estado</span>
+                <p className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium mt-0.5 ${ESTADO_STYLES[post.estado] || ''}`}>{post.estado}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   );

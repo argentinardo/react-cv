@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { CVMasterData } from '@/types/cv';
 import { profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, Eye } from 'lucide-react';
 import { generateCVFromOffer } from '@/services/ai_service';
 import { savePostulacion } from '@/services/firestore_service';
 import { inferPortal } from '@/utils/helpers';
@@ -34,11 +35,13 @@ const profiles = Object.keys(profileMap).map((key) => ({
 type Step = 'form' | 'editing' | 'done';
 
 export default function NuevaPostulacion() {
+  const navigate = useNavigate();
   const [step, setStep] = useState<Step>('form');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [cvData, setCvData] = useState<CVMasterData | null>(null);
   const [saving, setSaving] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
 
   const [urlOferta, setUrlOferta] = useState('');
   const [ofertaTexto, setOfertaTexto] = useState('');
@@ -84,7 +87,7 @@ export default function NuevaPostulacion() {
     setSaving(true);
     try {
       const portal = urlOferta ? inferPortal(urlOferta) : 'Manual';
-      await savePostulacion({
+      const id = await savePostulacion({
         empresa: data.empresaOferta || portal,
         portal,
         urlOferta,
@@ -96,6 +99,7 @@ export default function NuevaPostulacion() {
         estado: 'Pendiente',
         notas: '',
       });
+      setSavedId(id);
       setCvData(data);
       setStep('done');
     } catch (err) {
@@ -121,13 +125,18 @@ export default function NuevaPostulacion() {
           <Sparkles className="w-12 h-12 text-green-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-green-800 dark:text-green-300">Postulación guardada</h2>
           <p className="text-green-600 dark:text-green-400 mt-2">El CV y la carta de intención se han generado correctamente.</p>
-          <button
-            onClick={handleVolver}
-            className="btn mt-6 bg-violet-500 hover:bg-violet-600 text-white"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Nueva postulación
-          </button>
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <button onClick={handleVolver} className="btn bg-violet-500 hover:bg-violet-600 text-white">
+              <ArrowLeft className="w-4 h-4" />
+              Nueva postulación
+            </button>
+            {savedId && (
+              <button onClick={() => navigate(`/cv/${savedId}`)} className="btn border-green-300 hover:bg-green-50 dark:border-green-700 dark:hover:bg-green-900/20 text-green-700 dark:text-green-300">
+                <Eye className="w-4 h-4" />
+                Ver CV
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

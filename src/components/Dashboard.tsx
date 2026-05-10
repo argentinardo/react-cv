@@ -219,11 +219,11 @@ export default function Dashboard() {
                 </tr>
               )}
               {items.map((item) => (
-                <tr key={item.id} className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 max-w-[160px] truncate">{item.empresa}</td>
-                  <td className="px-4 py-3 text-gray-500 max-w-[120px] truncate">
+                <tr key={item.id} className="border-b border-gray-100 dark:border-gray-700/50 even:bg-gray-50/50 dark:even:bg-gray-800/20 hover:bg-gray-100 dark:hover:bg-gray-700/40 cursor-pointer" onClick={() => navigate(`/detalle/${item.id}`)}>
+                  <td className="px-4 py-3 font-medium text-violet-600 dark:text-violet-400 max-w-[160px] truncate">{item.empresa}</td>
+                  <td className="px-4 py-3">
                     {item.urlOferta ? (
-                      <a href={item.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline truncate">{item.urlOferta}</a>
+                      <a href={item.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs font-medium" onClick={(e) => e.stopPropagation()}>{item.portal || 'Ver oferta'}</a>
                     ) : (
                       <span className="text-gray-400 text-xs">—</span>
                     )}
@@ -235,7 +235,7 @@ export default function Dashboard() {
                   <td className="px-4 py-3">
                     {item.resumenOferta ? (
                       <button
-                        onClick={() => setResumenPost(item)}
+                        onClick={(e) => { e.stopPropagation(); setResumenPost(item); }}
                         className="text-amber-500 hover:text-amber-700 flex items-center gap-1 text-xs font-medium"
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export default function Dashboard() {
                   <td className="px-4 py-3">
                     {item.id && (
                       <button
-                        onClick={() => navigate(`/cv/${item.id}`)}
+                        onClick={(e) => { e.stopPropagation(); navigate(`/cv/${item.id}`); }}
                         className="text-violet-500 hover:text-violet-700 flex items-center gap-1 text-xs font-medium"
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -259,7 +259,7 @@ export default function Dashboard() {
                   <td className="px-4 py-3">
                     {item.cartaIntencion ? (
                       <button
-                        onClick={() => setCartaPost(item)}
+                        onClick={(e) => { e.stopPropagation(); setCartaPost(item); }}
                         className="text-sky-500 hover:text-sky-700 flex items-center gap-1 text-xs font-medium"
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -273,6 +273,7 @@ export default function Dashboard() {
                     <select
                       value={item.estado}
                       onChange={(e) => handleEstadoChange(item.id!, e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
                       className="form-select text-xs py-1"
                     >
                       <option value="Pendiente">Pendiente</option>
@@ -284,7 +285,7 @@ export default function Dashboard() {
                   <td className="px-4 py-3">
                     {item.notas ? (
                       <button
-                        onClick={() => setNotasPost(item)}
+                        onClick={(e) => { e.stopPropagation(); setNotasPost(item); }}
                         className="text-green-500 hover:text-green-700 flex items-center gap-1 text-xs font-medium"
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -292,7 +293,7 @@ export default function Dashboard() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => setNotasPost(item)}
+                        onClick={(e) => { e.stopPropagation(); setNotasPost(item); }}
                         className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-xs font-medium"
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -304,7 +305,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-end gap-1">
                       {item.id && (
                         <button
-                          onClick={() => navigate(`/editar/${item.id}`)}
+                          onClick={(e) => { e.stopPropagation(); navigate(`/editar/${item.id}`); }}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Editar"
                         >
@@ -312,7 +313,7 @@ export default function Dashboard() {
                         </button>
                       )}
                       <button
-                        onClick={() => handleDelete(item.id!)}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(item.id!); }}
                         className="text-red-400 hover:text-red-600 p-1"
                         title="Eliminar"
                       >

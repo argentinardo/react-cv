@@ -51,9 +51,9 @@ export default function EditarPostulacion() {
           <Sparkles className="w-12 h-12 text-green-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-green-800 dark:text-green-300">Postulación actualizada</h2>
           <p className="text-green-600 dark:text-green-400 mt-2">Los cambios se han guardado correctamente.</p>
-          <button onClick={() => navigate('/')} className="btn mt-6 bg-violet-500 hover:bg-violet-600 text-white">
+          <button onClick={() => navigate(`/cv/${id}`)} className="btn mt-6 bg-violet-500 hover:bg-violet-600 text-white">
             <ArrowLeft className="w-4 h-4" />
-            Volver al Dashboard
+            Volver al CV
           </button>
         </div>
       </div>
