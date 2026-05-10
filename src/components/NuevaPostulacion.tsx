@@ -87,6 +87,7 @@ export default function NuevaPostulacion() {
     setSaving(true);
     try {
       const portal = urlOferta ? inferPortal(urlOferta) : 'Manual';
+      const perfilKey = perfil === 'custom' ? perfilCustom : perfil;
       const id = await savePostulacion({
         empresa: data.empresaOferta || portal,
         portal,
@@ -98,6 +99,7 @@ export default function NuevaPostulacion() {
         cvData: data,
         estado: 'Pendiente',
         notas: '',
+        perfil: perfilKey,
       });
       setSavedId(id);
       setCvData(data);

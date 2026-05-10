@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, Clock, Send, Hourglass, XCircle, Trash2, FileText, Pencil, X } from 'lucide-react';
+import { Briefcase, Clock, Send, Hourglass, XCircle, Trash2, FileText, Pencil, X, Monitor, Truck, Package } from 'lucide-react';
 import { getCountByEstado, getPostulacionesByEstado, getPostulaciones, deletePostulacion, updatePostulacion, type PaginatedResult } from '@/services/firestore_service';
 import type { Postulacion } from '@/types/cv';
 
@@ -10,6 +10,19 @@ const ESTADOS: Array<{ label: string; color: string; bgColor: string }> = [
   { label: 'En proceso', color: 'text-green-500', bgColor: 'bg-green-500/20' },
   { label: 'Descartado', color: 'text-red-500', bgColor: 'bg-red-500/20' },
 ];
+
+const PERFILES = [
+  { key: 'desarrollador', label: 'Desarrollador', icon: Monitor, color: 'text-violet-500', bgColor: 'bg-violet-500/10' },
+  { key: 'conductor', label: 'Conductor', icon: Truck, color: 'text-sky-500', bgColor: 'bg-sky-500/10' },
+  { key: 'mozo-de-almacen', label: 'Mozo Almacén', icon: Package, color: 'text-amber-500', bgColor: 'bg-amber-500/10' },
+];
+
+function getPerfilIcon(post: Postulacion) {
+  const p = post.perfil || '';
+  const found = PERFILES.find((pf) => pf.key === p);
+  if (found) return found.icon;
+  return null;
+}
 
 function CartaModal({ post, onClose }: { post: Postulacion; onClose: () => void }) {
   return (
@@ -87,7 +100,8 @@ function NotasModal({ post, onClose, onSave }: { post: Postulacion; onClose: () 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({ total: 0, 'Pendiente': 0, 'Enviado': 0, 'En proceso': 0, 'Descartado': 0 });
-  const [filter, setFilter] = useState<string | null>(null);
+  const [estadoFilter, setEstadoFilter] = useState<string | null>(null);
+  const [perfilFilter, setPerfilFilter] = useState<string | null>(null);
   const [items, setItems] = useState<Postulacion[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -104,13 +118,14 @@ export default function Dashboard() {
     setLoading(true);
     try {
       let result: PaginatedResult;
-      if (filter) {
-        const filtered = await getPostulacionesByEstado(filter);
-        result = { items: filtered.slice(0, 15), lastVisible: null, hasMore: filtered.length > 15 };
+      if (estadoFilter) {
+        const raw = await getPostulacionesByEstado(estadoFilter);
+        result = { items: raw.slice(0, 15), lastVisible: null, hasMore: raw.length > 15 };
       } else {
         result = await getPostulaciones(15);
       }
-      setItems(result.items);
+      const filtered = perfilFilter ? result.items.filter((i) => i.perfil === perfilFilter) : result.items;
+      setItems(filtered);
       setHasMore(result.hasMore);
     } catch (e) {
       console.error('Error loading items:', e);
@@ -121,7 +136,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => { loadCounts(); }, []);
-  useEffect(() => { loadItems(); }, [filter]);
+  useEffect(() => { loadItems(); }, [estadoFilter, perfilFilter]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Eliminar esta postulación?')) return;
@@ -151,8 +166,8 @@ export default function Dashboard() {
       {/* Metric cards - single row */}
       <div className="flex gap-3 mb-6">
         <div
-          className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${!filter ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
-          onClick={() => setFilter(null)}
+          className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${!estadoFilter ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
+          onClick={() => setEstadoFilter(null)}
         >
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-500/10 shrink-0">
             <Briefcase className="w-4 h-4 text-violet-500" />
@@ -164,8 +179,8 @@ export default function Dashboard() {
         {ESTADOS.map((estado) => (
           <div
             key={estado.label}
-            className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${filter === estado.label ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
-            onClick={() => setFilter(filter === estado.label ? null : estado.label)}
+            className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${estadoFilter === estado.label ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
+            onClick={() => setEstadoFilter(estadoFilter === estado.label ? null : estado.label)}
           >
             <div className={`flex items-center justify-center w-7 h-7 rounded-full ${estado.bgColor} shrink-0`}>
               {estado.label === 'Pendiente' && <Clock className={`w-3.5 h-3.5 ${estado.color}`} />}
@@ -179,12 +194,35 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {filter && (
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">Filtrando por: <strong className="text-gray-900 dark:text-gray-100">{filter}</strong></span>
-          <button onClick={() => setFilter(null)} className="text-sm text-violet-500 hover:underline">Mostrar todo</button>
+      {estadoFilter && (
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-sm text-gray-600 dark:text-gray-400">Filtrando por: <strong className="text-gray-900 dark:text-gray-100">{estadoFilter}</strong></span>
+          <button onClick={() => setEstadoFilter(null)} className="text-sm text-violet-500 hover:underline">Mostrar todo</button>
         </div>
       )}
+
+      {/* Profile filter */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setPerfilFilter(null)}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${!perfilFilter ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+        >
+          Todos
+        </button>
+        {PERFILES.map((pf) => {
+          const Icon = pf.icon;
+          return (
+            <button
+              key={pf.key}
+              onClick={() => setPerfilFilter(perfilFilter === pf.key ? null : pf.key)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${perfilFilter === pf.key ? `${pf.bgColor} ${pf.color}` : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {pf.label}
+            </button>
+          );
+        })}
+      </div>
 
       {/* Table */}
       <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl overflow-hidden">
@@ -233,17 +271,20 @@ export default function Dashboard() {
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-xs">{item.modeloIA}</span>
                   </td>
                   <td className="px-4 py-3">
-                    {item.resumenOferta ? (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setResumenPost(item); }}
-                        className="text-amber-500 hover:text-amber-700 flex items-center gap-1 text-xs font-medium"
-                      >
-                        <FileText className="w-3.5 h-3.5" />
-                        Ver
-                      </button>
-                    ) : (
-                      <span className="text-gray-400 text-xs">—</span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {(() => { const Icon = getPerfilIcon(item); return Icon ? <Icon className="w-4 h-4 text-gray-400 shrink-0" /> : null; })()}
+                      {item.resumenOferta ? (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setResumenPost(item); }}
+                          className="text-amber-500 hover:text-amber-700 flex items-center gap-1 text-xs font-medium"
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                          Ver
+                        </button>
+                      ) : (
+                        <span className="text-gray-400 text-xs">—</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     {item.id && (

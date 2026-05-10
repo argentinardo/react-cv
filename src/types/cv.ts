@@ -44,4 +44,5 @@ export interface Postulacion {
   cvData: CVMasterData;
   estado: 'Pendiente' | 'Enviado' | 'En proceso' | 'Descartado';
   notas: string;
+  perfil?: string;
 }
