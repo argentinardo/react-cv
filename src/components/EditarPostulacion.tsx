@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { CVMasterData, Postulacion } from '@/types/cv';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, RefreshCw, Loader } from 'lucide-react';
 import { getPostulacionById, updatePostulacion } from '@/services/firestore_service';
+import { generateCVFromOffer } from '@/services/ai_service';
+import { scrapeUrl } from '@/services/scraping_service';
 import CVEditor from './CVEditor';
 
 export default function EditarPostulacion() {
@@ -16,6 +18,7 @@ export default function EditarPostulacion() {
   const [idioma, setIdioma] = useState('');
   const [cvData, setCvData] = useState<CVMasterData | null>(null);
   const [saving, setSaving] = useState(false);
+  const [retraducir, setRetraducir] = useState(false);
   const [loading, setLoading] = useState(true);
   const [done, setDone] = useState(false);
 
@@ -52,6 +55,30 @@ export default function EditarPostulacion() {
       // silently fail
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleRetraducir = async () => {
+    if (!post || !id || !idioma) return;
+    setRetraducir(true);
+    try {
+      let texto = post.ofertaTexto || '';
+      if (!texto && post.urlOferta) {
+        texto = await scrapeUrl(post.urlOferta);
+      }
+      if (!texto) return;
+
+      const perfilKey = post.perfil || 'desarrollador';
+      const engine = post.modeloIA?.split(' / ')[0] || 'gemini';
+      const model = post.modeloIA?.split(' / ')[1] || 'gemini-2.0-flash';
+
+      const result = await generateCVFromOffer(texto, perfilKey, engine, model, '', idioma);
+      setCvData(result);
+      setPost({ ...post, cvData: result, idioma });
+    } catch {
+      // silently fail
+    } finally {
+      setRetraducir(false);
     }
   };
 
@@ -116,12 +143,23 @@ export default function EditarPostulacion() {
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Idioma del CV</label>
-            <select value={idioma} onChange={(e) => setIdioma(e.target.value)} className="form-select w-full text-sm">
-              <option value="">Auto (detectar)</option>
-              <option value="es">Español</option>
-              <option value="ca">Català</option>
-              <option value="en">English</option>
-            </select>
+            <div className="flex gap-2">
+              <select value={idioma} onChange={(e) => setIdioma(e.target.value)} className="form-select w-full text-sm">
+                <option value="">Auto (detectar)</option>
+                <option value="es">Español</option>
+                <option value="ca">Català</option>
+                <option value="en">English</option>
+              </select>
+              <button
+                onClick={handleRetraducir}
+                disabled={retraducir || !idioma || !post?.ofertaTexto && !post?.urlOferta}
+                className="btn border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Re-traducir contenido al idioma seleccionado"
+              >
+                {retraducir ? <Loader className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              </button>
+            </div>
+            {retraducir && <p className="text-xs text-violet-500 mt-1">Re-traduciendo contenido...</p>}
           </div>
         </div>
       </div>

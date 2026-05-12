@@ -6,6 +6,7 @@ import CVBuilder from './components/CVBuilder';
 import CVViewer from './components/CVViewer';
 import DetallePostulacion from './components/DetallePostulacion';
 import EditarPostulacion from './components/EditarPostulacion';
+import CargaMasiva from './components/CargaMasiva';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="cv/:id" element={<CVViewer />} />
           <Route path="detalle/:id" element={<DetallePostulacion />} />
           <Route path="editar/:id" element={<EditarPostulacion />} />
+          <Route path="carga-masiva" element={<CargaMasiva />} />
         </Route>
       </Routes>
     </BrowserRouter>

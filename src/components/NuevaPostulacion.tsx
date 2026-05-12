@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { CVMasterData } from '@/types/cv';
 import { profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
-import { Sparkles, ArrowLeft, Eye } from 'lucide-react';
+import { Sparkles, ArrowLeft, Eye, Globe } from 'lucide-react';
 import { generateCVFromOffer } from '@/services/ai_service';
 import { savePostulacion } from '@/services/firestore_service';
 import { inferPortal, detectLanguage } from '@/utils/helpers';
+import { scrapeUrl } from '@/services/scraping_service';
 import CVEditor from './CVEditor';
 
 const IA_ENGINES: Record<string, { label: string; models: string[] }> = {
@@ -38,10 +39,12 @@ export default function NuevaPostulacion() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('form');
   const [loading, setLoading] = useState(false);
+  const [scraping, setScraping] = useState(false);
   const [error, setError] = useState('');
   const [cvData, setCvData] = useState<CVMasterData | null>(null);
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const [textoOriginal, setTextoOriginal] = useState('');
 
   const [urlOferta, setUrlOferta] = useState('');
   const [ofertaTexto, setOfertaTexto] = useState('');
@@ -57,8 +60,11 @@ export default function NuevaPostulacion() {
   };
 
   const handleGenerar = async () => {
-    if (!ofertaTexto.trim()) {
-      setError('Pega el texto de la oferta de trabajo.');
+    let texto = ofertaTexto.trim();
+    const url = urlOferta.trim();
+
+    if (!texto && !url) {
+      setError('Pega el texto de la oferta o introduce una URL.');
       return;
     }
 
@@ -66,9 +72,17 @@ export default function NuevaPostulacion() {
     setError('');
 
     try {
+      if (!texto && url) {
+        setScraping(true);
+        texto = await scrapeUrl(url);
+        setScraping(false);
+      }
+
+      setTextoOriginal(texto);
+
       const perfilKey = perfil === 'custom' ? perfilCustom : perfil;
       const result = await generateCVFromOffer(
-        ofertaTexto,
+        texto,
         perfilKey,
         iaEngine,
         iaModel,
@@ -78,6 +92,7 @@ export default function NuevaPostulacion() {
       setStep('editing');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al generar el CV con IA.');
+      setScraping(false);
     } finally {
       setLoading(false);
     }
@@ -104,6 +119,7 @@ export default function NuevaPostulacion() {
         notas: '',
         perfil: perfilKey,
         idioma,
+        ofertaTexto: textoOriginal,
       });
       setSavedId(id);
       setCvData(data);
@@ -162,20 +178,23 @@ export default function NuevaPostulacion() {
       <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-            URL de la oferta <span className="text-gray-400 font-normal">(opcional)</span>
+            URL de la oferta <span className="text-gray-400 font-normal">(Es necesario si el texto de la oferta esta vacío)</span>
           </label>
-          <input
-            type="url"
-            value={urlOferta}
-            onChange={(e) => setUrlOferta(e.target.value)}
-            placeholder="https://www.linkedin.com/jobs/view/..."
-            className="form-input w-full"
-          />
+          <div className="relative">
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <input
+              type="url"
+              value={urlOferta}
+              onChange={(e) => setUrlOferta(e.target.value)}
+              placeholder="https://www.linkedin.com/jobs/view/..."
+              className="form-input w-full pl-9"
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-            Texto de la oferta <span className="text-red-500">*</span>
+            Texto de la oferta <span className="text-gray-400 font-normal">(Si hay url, se scrapeará si se deja en blanco)</span>
           </label>
           <textarea
             value={ofertaTexto}
@@ -265,7 +284,7 @@ export default function NuevaPostulacion() {
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Generando...
+                {scraping ? 'Scrapeando oferta...' : 'Generando...'}
               </>
             ) : (
               <>

@@ -61,9 +61,12 @@ RULES:
 12. empresaOferta → Exact name of the company publishing the offer. If not mentioned, put "Company not specified".`,
 };
 
-function buildPrompt(ofertaTexto: string, perfil: string, instrucciones: string): string {
-  const detectedLang = detectLanguage(ofertaTexto);
-  const language = mapLanguage(detectedLang);
+const LANG_DISPLAY: Record<string, string> = { es: 'Spanish', ca: 'Catalan', en: 'English' };
+const LANG_KEY: Record<string, LanguageKey> = { es: 'castellano', ca: 'catalan', en: 'english' };
+
+function buildPrompt(ofertaTexto: string, perfil: string, instrucciones: string, forcedLang?: string): string {
+  const detectedLang = forcedLang ? LANG_DISPLAY[forcedLang] || detectLanguage(ofertaTexto) : detectLanguage(ofertaTexto);
+  const language = forcedLang ? (LANG_KEY[forcedLang] || mapLanguage(detectedLang)) : mapLanguage(detectedLang);
   const profileKey = (perfil in profileMap ? perfil : 'desarrollador') as ProfileKey;
   const profile = getProfile(profileKey, language);
   const { header } = userData;
@@ -341,11 +344,14 @@ export async function generateCVFromOffer(
   perfil: string,
   iaEngine: string,
   iaModel: string,
-  instrucciones: string = ''
+  instrucciones: string = '',
+  forceLanguage?: string
 ): Promise<CVMasterData> {
-  const prompt = buildPrompt(ofertaTexto, perfil, instrucciones);
+  const prompt = buildPrompt(ofertaTexto, perfil, instrucciones, forceLanguage);
   const profileKey = (perfil in profileMap ? perfil : 'desarrollador') as ProfileKey;
-  const language = mapLanguage(detectLanguage(ofertaTexto));
+  const language = forceLanguage
+    ? (LANG_KEY[forceLanguage] || mapLanguage(detectLanguage(ofertaTexto)))
+    : mapLanguage(detectLanguage(ofertaTexto));
 
   let response: string;
   switch (iaEngine) {

@@ -46,4 +46,5 @@ export interface Postulacion {
   notas: string;
   perfil?: string;
   idioma?: string;
+  ofertaTexto?: string;
 }
