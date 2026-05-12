@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Printer, Download, Pencil, ExternalLink, FileText } from 'lucide-react';
+import { ArrowLeft, Printer, Download, Pencil, ExternalLink, FileText, ListPlus } from 'lucide-react';
 import { getPostulacionById } from '@/services/firestore_service';
 import type { Postulacion, CVMasterData } from '@/types/cv';
 
@@ -13,7 +13,8 @@ const SECTION_TITLES: Record<string, Record<string, string>> = {
   formacion: { es: 'Formación', ca: 'Formació', en: 'Education' },
 };
 
-function detectCvLang(cv: CVMasterData): string {
+function detectCvLang(cv: CVMasterData, idioma?: string): string {
+  if (idioma && ['es', 'ca', 'en'].includes(idioma)) return idioma;
   const text = (cv.sobreMi + ' ' + (cv.cartaIntencion || '')).toLowerCase();
   const caScore = (text.match(/\b(els|les|una|per|que|amb|dels|més|entre|sobre|però|sinó|també)\b/g) || []).length;
   const enScore = (text.match(/\b(the|you|we|they|for|with|about|and|this|that|from|have|will|your|our|their|experience|skills|job|work|team|must|should|able|ability)\b/g) || []).length;
@@ -33,8 +34,8 @@ const ESTADO_STYLES: Record<string, string> = {
   'Descartado': 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30',
 };
 
-function buildCVHtml(cv: CVMasterData): string {
-  const lang = detectCvLang(cv);
+function buildCVHtml(cv: CVMasterData, idioma?: string): string {
+  const lang = detectCvLang(cv, idioma);
   const h = cv.header;
 
   const expHtml = cv.experiencia.map((e) => `
@@ -165,7 +166,7 @@ export default function DetallePostulacion() {
     if (!post) return;
     const iframe = iframeRef.current;
     if (!iframe) return;
-    const html = buildCVHtml(post.cvData);
+    const html = buildCVHtml(post.cvData, post.idioma);
     const doc = iframe.contentDocument;
     if (doc) {
       doc.open();
@@ -176,7 +177,7 @@ export default function DetallePostulacion() {
 
   const handlePrint = () => {
     if (!post) return;
-    const html = buildCVHtml(post.cvData);
+    const html = buildCVHtml(post.cvData, post.idioma);
     const win = window.open('', '_blank');
     if (!win) return;
     win.document.write(html);
@@ -187,7 +188,7 @@ export default function DetallePostulacion() {
 
   const handleDownload = () => {
     if (!post) return;
-    const html = buildCVHtml(post.cvData);
+    const html = buildCVHtml(post.cvData, post.idioma);
     const blob = new Blob([`<!DOCTYPE html>\n${html}`], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -269,6 +270,7 @@ export default function DetallePostulacion() {
             </p>
           </div>
 
+
           {post.notas && (
             <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-6">
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
@@ -280,6 +282,45 @@ export default function DetallePostulacion() {
               </p>
             </div>
           )}
+
+<div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 space-y-3">
+<h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <ListPlus className="w-5 h-5 text-sky-500" />
+              Detalles
+            </h2>
+            <div className="space-y-2.5 text-sm">
+              <div>
+                <span className="text-gray-400 text-xs">Idioma</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.idioma === 'ca' ? 'Català' : post.idioma === 'en' ? 'English' : 'Español'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Rol</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium capitalize">{post.perfil ? post.perfil.replace(/-/g, ' ') : '—'}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">URL</span>
+                <p className="truncate w-80">
+                  {post.urlOferta ? (
+                    <a href={post.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline">
+                      {post.portal}
+                    </a>
+                  ) : '—'}
+                </p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Modelo IA</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.modeloIA}</p>
+              </div>
+              <div>
+                <span className="text-gray-400 text-xs">Fecha</span>
+                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.fecha}</p>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span className="text-gray-400 text-xs">Estado</span>
+                <p className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium mt-0.5 ${ESTADO_STYLES[post.estado] || ''}`}>{post.estado}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -298,37 +339,7 @@ export default function DetallePostulacion() {
               />
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 shadow-xs rounded-xl p-5 space-y-3">
-            <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Detalles</h2>
-            <div className="space-y-2.5 text-sm">
-              <div>
-                <span className="text-gray-400 text-xs">Portal</span>
-                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.portal || '—'}</p>
-              </div>
-              <div>
-                <span className="text-gray-400 text-xs">URL</span>
-                <p className="truncate">
-                  {post.urlOferta ? (
-                    <a href={post.urlOferta} target="_blank" rel="noopener noreferrer" className="text-violet-500 hover:text-violet-700 text-xs underline">
-                      {post.urlOferta}
-                    </a>
-                  ) : '—'}
-                </p>
-              </div>
-              <div>
-                <span className="text-gray-400 text-xs">Modelo IA</span>
-                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.modeloIA}</p>
-              </div>
-              <div>
-                <span className="text-gray-400 text-xs">Fecha</span>
-                <p className="text-gray-800 dark:text-gray-200 font-medium">{post.fecha}</p>
-              </div>
-              <div>
-                <span className="text-gray-400 text-xs">Estado</span>
-                <p className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium mt-0.5 ${ESTADO_STYLES[post.estado] || ''}`}>{post.estado}</p>
-              </div>
-            </div>
-          </div>
+
 
         </div>
       </div>

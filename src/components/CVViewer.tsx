@@ -13,7 +13,8 @@ const SECTION_TITLES: Record<string, Record<string, string>> = {
   formacion: { es: 'Formación', ca: 'Formació', en: 'Education' },
 };
 
-function detectCvLang(cv: CVMasterData): string {
+function detectCvLang(cv: CVMasterData, idioma?: string): string {
+  if (idioma && ['es', 'ca', 'en'].includes(idioma)) return idioma;
   const text = (cv.sobreMi + ' ' + (cv.cartaIntencion || '')).toLowerCase();
   const caScore = (text.match(/\b(els|les|una|per|que|amb|dels|més|entre|sobre|però|sinó|també)\b/g) || []).length;
   const enScore = (text.match(/\b(the|you|we|they|for|with|about|and|this|that|from|have|will|your|our|their|experience|skills|job|work|team|must|should|able|ability)\b/g) || []).length;
@@ -28,7 +29,7 @@ function t(section: string, lang: string): string {
 
 function buildCVHtml(post: Postulacion): string {
   const { cvData: cv } = post;
-  const lang = detectCvLang(cv);
+  const lang = detectCvLang(cv, post.idioma);
   const h = cv.header;
 
   const expHtml = cv.experiencia.map((e) => `

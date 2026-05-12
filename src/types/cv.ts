@@ -45,4 +45,5 @@ export interface Postulacion {
   estado: 'Pendiente' | 'Enviado' | 'En proceso' | 'Descartado';
   notas: string;
   perfil?: string;
+  idioma?: string;
 }

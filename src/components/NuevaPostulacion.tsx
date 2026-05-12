@@ -5,7 +5,7 @@ import { profileMap, profileMeta, type ProfileKey } from '@/data/user-profiles';
 import { Sparkles, ArrowLeft, Eye } from 'lucide-react';
 import { generateCVFromOffer } from '@/services/ai_service';
 import { savePostulacion } from '@/services/firestore_service';
-import { inferPortal } from '@/utils/helpers';
+import { inferPortal, detectLanguage } from '@/utils/helpers';
 import CVEditor from './CVEditor';
 
 const IA_ENGINES: Record<string, { label: string; models: string[] }> = {
@@ -88,6 +88,9 @@ export default function NuevaPostulacion() {
     try {
       const portal = urlOferta ? inferPortal(urlOferta) : 'Manual';
       const perfilKey = perfil === 'custom' ? perfilCustom : perfil;
+      const detected = detectLanguage(data.cartaIntencion || data.sobreMi || ofertaTexto);
+      const langMap: Record<string, string> = { Spanish: 'es', English: 'en', Catalan: 'ca' };
+      const idioma = langMap[detected] || 'es';
       const id = await savePostulacion({
         empresa: data.empresaOferta || portal,
         portal,
@@ -100,6 +103,7 @@ export default function NuevaPostulacion() {
         estado: 'Pendiente',
         notas: '',
         perfil: perfilKey,
+        idioma,
       });
       setSavedId(id);
       setCvData(data);

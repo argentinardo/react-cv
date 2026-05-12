@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, Clock, Send, Hourglass, XCircle, Trash2, FileText, Pencil, X, Monitor, Truck, Package } from 'lucide-react';
+import { Briefcase, Clock, Send, Hourglass, XCircle, Trash2, FileText, Pencil, X, Monitor, Truck, Package, ChevronDown, ChevronUp } from 'lucide-react';
 import { getCountByEstado, getPostulacionesByEstado, getPostulaciones, deletePostulacion, updatePostulacion, type PaginatedResult } from '@/services/firestore_service';
 import type { Postulacion } from '@/types/cv';
 
@@ -22,6 +22,16 @@ function getPerfilIcon(post: Postulacion) {
   const found = PERFILES.find((pf) => pf.key === p);
   if (found) return found.icon;
   return null;
+}
+
+function getLangFlag(post: Postulacion): string | null {
+  if (post.idioma && ['es', 'ca', 'en'].includes(post.idioma)) return post.idioma.toUpperCase();
+  const text = ((post.cvData?.sobreMi || '') + ' ' + (post.cartaIntencion || '')).toLowerCase();
+  const caScore = (text.match(/\b(els|les|una|per|que|amb|dels|més|entre|sobre|però|sinó|també)\b/g) || []).length;
+  const enScore = (text.match(/\b(the|you|we|they|for|with|about|and|this|that|from|have|will|your|our|their|experience|skills|job|work|team|must|should|able|ability)\b/g) || []).length;
+  if (caScore > enScore && caScore > 2) return 'CA';
+  if (enScore > caScore && enScore > 2) return 'EN';
+  return 'ES';
 }
 
 function CartaModal({ post, onClose }: { post: Postulacion; onClose: () => void }) {
@@ -97,6 +107,68 @@ function NotasModal({ post, onClose, onSave }: { post: Postulacion; onClose: () 
   );
 }
 
+function EditModal({ post, onClose, onSave }: { post: Postulacion; onClose: () => void; onSave: (data: Partial<Postulacion>) => void }) {
+  const [empresa, setEmpresa] = useState(post.empresa || '');
+  const [portal, setPortal] = useState(post.portal || '');
+  const [urlOferta, setUrlOferta] = useState(post.urlOferta || '');
+  const [perfil, setPerfil] = useState(post.perfil || '');
+  const [idioma, setIdioma] = useState(post.idioma || '');
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Editar postulación</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Empresa</label>
+            <input value={empresa} onChange={(e) => setEmpresa(e.target.value)} className="form-input w-full text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Portal</label>
+            <input value={portal} onChange={(e) => setPortal(e.target.value)} className="form-input w-full text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">URL de la oferta</label>
+            <input value={urlOferta} onChange={(e) => setUrlOferta(e.target.value)} className="form-input w-full text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Rol</label>
+            <select value={perfil} onChange={(e) => setPerfil(e.target.value)} className="form-select w-full text-sm">
+              <option value="">Sin especificar</option>
+              <option value="desarrollador">Desarrollador</option>
+              <option value="conductor">Conductor</option>
+              <option value="mozo-de-almacen">Mozo de Almacén</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Idioma del CV</label>
+            <select value={idioma} onChange={(e) => setIdioma(e.target.value)} className="form-select w-full text-sm">
+              <option value="">Auto (detectar)</option>
+              <option value="es">Español</option>
+              <option value="ca">Català</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex justify-end gap-2 mt-6">
+          <button onClick={onClose} className="btn border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50 text-sm">Cancelar</button>
+          <button
+            onClick={() => { onSave({ empresa, portal, urlOferta, perfil, idioma }); onClose(); }}
+            className="btn bg-violet-500 hover:bg-violet-600 text-white text-sm"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({ total: 0, 'Pendiente': 0, 'Enviado': 0, 'En proceso': 0, 'Descartado': 0 });
@@ -108,6 +180,8 @@ export default function Dashboard() {
   const [cartaPost, setCartaPost] = useState<Postulacion | null>(null);
   const [resumenPost, setResumenPost] = useState<Postulacion | null>(null);
   const [notasPost, setNotasPost] = useState<Postulacion | null>(null);
+  const [editPost, setEditPost] = useState<Postulacion | null>(null);
+  const [showMetrics, setShowMetrics] = useState(false);
 
   const loadCounts = async () => {
     const c = await getCountByEstado();
@@ -156,6 +230,12 @@ export default function Dashboard() {
     loadItems();
   };
 
+  const handleEditSave = async (id: string, data: Partial<Postulacion>) => {
+    await updatePostulacion(id, data);
+    loadItems();
+    loadCounts();
+  };
+
   return (
     <div>
       <div className="mb-4">
@@ -163,35 +243,50 @@ export default function Dashboard() {
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Resumen de tus postulaciones</p>
       </div>
 
-      {/* Metric cards - single row */}
-      <div className="flex gap-3 mb-6">
-        <div
-          className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${!estadoFilter ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
-          onClick={() => setEstadoFilter(null)}
+      {/* Metric cards - collapsible on mobile */}
+      <div className="mb-6">
+        <button
+          onClick={() => setShowMetrics(!showMetrics)}
+          className="flex lg:hidden items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 mb-2"
         >
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-500/10 shrink-0">
-            <Briefcase className="w-4 h-4 text-violet-500" />
-          </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">Total</span>
-            <span className="text-xl font-bold text-gray-900 dark:text-gray-100 ml-auto">{counts.total}</span>
-        </div>
-
-        {ESTADOS.map((estado) => (
+          {showMetrics ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          {showMetrics ? 'Ocultar' : 'Mostrar'} resumen
+        </button>
+        <div className={`${showMetrics ? 'grid' : 'hidden'} lg:grid grid-cols-5 gap-2`}>
           <div
-            key={estado.label}
-            className={`flex items-center gap-3 flex-1 min-w-0 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2.5 px-3 ${estadoFilter === estado.label ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
-            onClick={() => setEstadoFilter(estadoFilter === estado.label ? null : estado.label)}
+            className={`flex items-center justify-center lg:justify-start gap-2 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2 px-3 ${!estadoFilter ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
+            onClick={() => setEstadoFilter(null)}
           >
-            <div className={`flex items-center justify-center w-7 h-7 rounded-full ${estado.bgColor} shrink-0`}>
-              {estado.label === 'Pendiente' && <Clock className={`w-3.5 h-3.5 ${estado.color}`} />}
-              {estado.label === 'Enviado' && <Send className={`w-3.5 h-3.5 ${estado.color}`} />}
-              {estado.label === 'En proceso' && <Hourglass className={`w-3.5 h-3.5 ${estado.color}`} />}
-              {estado.label === 'Descartado' && <XCircle className={`w-3.5 h-3.5 ${estado.color}`} />}
+            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-violet-500/10 shrink-0">
+              <Briefcase className="w-3.5 h-3.5 text-violet-500" />
             </div>
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">{estado.label}</span>
-              <span className="text-xl font-bold text-gray-900 dark:text-gray-100 ml-auto">{counts[estado.label] || 0}</span>
+            <div className="min-w-0 hidden lg:block">
+              <p className="text-[11px] font-medium text-gray-400 leading-tight">Total</p>
+              <p className="text-base font-bold text-gray-900 dark:text-gray-100">{counts.total}</p>
+            </div>
+            <span className="text-base font-bold text-gray-900 dark:text-gray-100 lg:hidden">{counts.total}</span>
           </div>
-        ))}
+
+          {ESTADOS.map((estado) => (
+            <div
+              key={estado.label}
+              className={`flex items-center justify-center lg:justify-start gap-2 bg-white dark:bg-gray-800 shadow-xs rounded-lg cursor-pointer transition py-2 px-3 ${estadoFilter === estado.label ? 'ring-2 ring-violet-500/50' : 'ring-1 ring-violet-500/20'}`}
+              onClick={() => setEstadoFilter(estadoFilter === estado.label ? null : estado.label)}
+            >
+              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${estado.bgColor} shrink-0`}>
+                {estado.label === 'Pendiente' && <Clock className={`w-3.5 h-3.5 ${estado.color}`} />}
+                {estado.label === 'Enviado' && <Send className={`w-3.5 h-3.5 ${estado.color}`} />}
+                {estado.label === 'En proceso' && <Hourglass className={`w-3.5 h-3.5 ${estado.color}`} />}
+                {estado.label === 'Descartado' && <XCircle className={`w-3.5 h-3.5 ${estado.color}`} />}
+              </div>
+              <div className="min-w-0 hidden lg:block">
+                <p className="text-[11px] font-medium text-gray-400 leading-tight truncate">{estado.label}</p>
+                <p className="text-base font-bold text-gray-900 dark:text-gray-100">{counts[estado.label] || 0}</p>
+              </div>
+              <span className="text-base font-bold text-gray-900 dark:text-gray-100 lg:hidden">{counts[estado.label] || 0}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {estadoFilter && (
@@ -205,9 +300,10 @@ export default function Dashboard() {
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setPerfilFilter(null)}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${!perfilFilter ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+          className={`inline-flex items-center justify-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-lg text-xs font-medium transition ${!perfilFilter ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
         >
-          Todos
+          <span className="hidden lg:inline">Todos</span>
+          <span className="lg:hidden w-3.5 h-3.5 rounded-full ring-2 ring-current" />
         </button>
         {PERFILES.map((pf) => {
           const Icon = pf.icon;
@@ -215,10 +311,10 @@ export default function Dashboard() {
             <button
               key={pf.key}
               onClick={() => setPerfilFilter(perfilFilter === pf.key ? null : pf.key)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${perfilFilter === pf.key ? `${pf.bgColor} ${pf.color}` : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+              className={`inline-flex items-center justify-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-lg text-xs font-medium transition ${perfilFilter === pf.key ? `${pf.bgColor} ${pf.color}` : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
             >
-              <Icon className="w-3.5 h-3.5" />
-              {pf.label}
+              <Icon className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden lg:inline">{pf.label}</span>
             </button>
           );
         })}
@@ -271,8 +367,9 @@ export default function Dashboard() {
                     <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-xs">{item.modeloIA}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {(() => { const Icon = getPerfilIcon(item); return Icon ? <Icon className="w-4 h-4 text-gray-400 shrink-0" /> : null; })()}
+                      {(() => { const flag = getLangFlag(item); return flag ? <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase leading-none">{flag}</span> : null; })()}
                       {item.resumenOferta ? (
                         <button
                           onClick={(e) => { e.stopPropagation(); setResumenPost(item); }}
@@ -346,7 +443,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-end gap-1">
                       {item.id && (
                         <button
-                          onClick={(e) => { e.stopPropagation(); navigate(`/editar/${item.id}`); }}
+                          onClick={(e) => { e.stopPropagation(); setEditPost(item); }}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
                           title="Editar"
                         >
@@ -379,6 +476,7 @@ export default function Dashboard() {
       {cartaPost && <CartaModal post={cartaPost} onClose={() => setCartaPost(null)} />}
       {resumenPost && <ResumenModal post={resumenPost} onClose={() => setResumenPost(null)} />}
       {notasPost && <NotasModal post={notasPost} onClose={() => setNotasPost(null)} onSave={(notas) => handleNotasSave(notasPost.id!, notas)} />}
+      {editPost && <EditModal post={editPost} onClose={() => setEditPost(null)} onSave={(data) => handleEditSave(editPost.id!, data)} />}
     </div>
   );
 }
